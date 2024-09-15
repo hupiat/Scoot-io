@@ -1,5 +1,10 @@
 package hupiat.scootio.server.accounts;
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import hupiat.scootio.server.core.entities.AbstractCommonEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -9,7 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "accounts")
-public class AccountEntity extends AbstractCommonEntity {
+public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 
 	@Column(nullable = false, unique = true)
 	private String email;
@@ -74,5 +79,11 @@ public class AccountEntity extends AbstractCommonEntity {
 	@Override
 	public String toString() {
 		return "AccountEntity [email=" + email + ", username=" + username + "]";
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO : not implemented yet
+		return null;
 	}
 }
