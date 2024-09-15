@@ -6,6 +6,6 @@ Your companion for electrical scooter
 
 - [ ] Secure traffic algorithm
 - [ ] Scalable server
-- [ ] Trips management
-- [ ] Trips view workflow
+- [ ] Roadlines management
+- [ ] Roadline view workflow
 - [ ] Users authentication
