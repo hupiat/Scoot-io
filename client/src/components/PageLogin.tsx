@@ -7,22 +7,18 @@ import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account} from '../commons/types';
 import Toast from 'react-native-toast-message';
 import {FloatingAction} from 'react-native-floating-action';
-import {validateEmail, validatePassword} from '../commons/tools';
+import {
+  displayErrorToast,
+  validateEmail,
+  validatePassword,
+} from '../commons/tools';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
   const [mail, setMail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
-  const {user, setUser, storeDataAccounts} = useMiddlewareContext();
-
-  if (!!user) {
-    Toast.show({
-      type: 'info',
-      text1: 'Login',
-      text2: 'You have been logged',
-    });
-  }
+  const {setUser, storeDataAccounts} = useMiddlewareContext();
 
   const validateSchema = (): boolean => {
     if (isSuscribing) {
@@ -39,11 +35,18 @@ export default function PageLogin() {
 
   const handlePress = () => {
     if (isSuscribing) {
-      storeDataAccounts.add({
-        email: mail,
-        username: mail,
-        password: passwordConfirm,
-      });
+      storeDataAccounts
+        .add({
+          email: mail,
+          username: mail,
+          password: passwordConfirm,
+        })
+        .catch(() =>
+          displayErrorToast({
+            name: 'Error',
+            message: 'An account with this e-mail is already in base',
+          }),
+        );
     } else {
       setUser({
         email: mail,

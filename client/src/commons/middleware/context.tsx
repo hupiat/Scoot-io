@@ -5,6 +5,7 @@ import DataStore from './DataStore';
 import {displayErrorToast} from '../tools';
 import {API_ACCOUNTS, API_PREFIX, URL_BACKEND} from './paths';
 import {useStoreDataAccounts} from './hooks';
+import Toast from 'react-native-toast-message';
 
 interface IMiddlewareContext {
   user: Account | null;
@@ -42,6 +43,11 @@ const MiddlewareContext = ({children}: IProps) => {
         )
           .then(() => {
             setUserState(user);
+            Toast.show({
+              type: 'info',
+              text1: 'Logout',
+              text2: 'You have been logged out',
+            });
           })
           .catch(displayErrorToast);
       });
@@ -65,6 +71,11 @@ const MiddlewareContext = ({children}: IProps) => {
             if (res!.status == 404) {
               throw Error('Bad credentials');
             } else {
+              Toast.show({
+                type: 'info',
+                text1: 'Login',
+                text2: 'You have been logged',
+              });
               return await res!.json();
             }
           })
