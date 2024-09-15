@@ -43,6 +43,7 @@ const MiddlewareContext = ({ children }: IProps) => {
             .then(() => {
                 setUserState(user);
             })
+            .catch(displayErrorToast)
         });
     } else {
         startUserTransition(() => {

@@ -12,7 +12,13 @@ export default function PageLogin() {
     const [password, setPassword] = useState<string>("");
     const { user, setUser } = useMiddlewareContext();
 
-    console.log(user);
+    if (!!user) {
+        Toast.show({
+            type: "info",
+            text1: "Login",
+            text2: "You have been logged"
+        });
+    }
 
     return (
         <SafeAreaView style={styles.rootView}>
@@ -34,11 +40,7 @@ export default function PageLogin() {
                     onPress={() => setUser({
                         email: mail,
                         password: password
-                    } as Account).then(() => Toast.show({
-                        type: "info",
-                        text1: "Login",
-                        text2: "You have been logged"
-                    }))}>
+                    } as Account)}>
                     Login
                 </Button>
             </View>
