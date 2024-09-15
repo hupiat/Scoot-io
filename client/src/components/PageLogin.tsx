@@ -2,7 +2,7 @@ import { IconOutline } from "@ant-design/icons-react-native";
 import { Input } from "@ant-design/react-native";
 import React from "react";
 import { Image, SafeAreaView, View } from "react-native";
-import logo from "../assets/logo.png";
+import logo from "./assets/logo.png";
 
 export default function PageLogin() {
     return (

@@ -8,7 +8,7 @@
 import React from 'react';
 import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import PageLogin from './components/PageLogin';
+import PageLogin from './src/components/PageLogin';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
