@@ -5,13 +5,13 @@ import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import logo from '../assets/logo.png';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account} from '../commons/types';
-import Toast from 'react-native-toast-message';
 import {FloatingAction} from 'react-native-floating-action';
 import {
   displayErrorToast,
   validateEmail,
   validatePassword,
 } from '../commons/tools';
+import * as Location from 'expo-location';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
@@ -19,6 +19,9 @@ export default function PageLogin() {
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
   const {setUser, storeDataAccounts} = useMiddlewareContext();
+
+  Location.requestForegroundPermissionsAsync();
+  Location.requestBackgroundPermissionsAsync();
 
   const validateSchema = (): boolean => {
     if (isSuscribing) {

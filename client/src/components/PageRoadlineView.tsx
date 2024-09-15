@@ -1,30 +1,42 @@
 import {View} from '@ant-design/react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
-import {Location} from 'react-native-location';
-import MapView from 'react-native-maps';
-
-import RNLocation from 'react-native-location';
+import MapView, {Marker, MarkerAnimated} from 'react-native-maps';
+import * as Location from 'expo-location';
 
 export default function PageRoadlineView() {
-  RNLocation.requestPermission({
-    ios: 'whenInUse',
-    android: {
-      detail: 'fine',
-    },
-  }).then((granted: boolean) => {
-    if (granted) {
-      RNLocation.subscribeToLocationUpdates((locations: Location[]) => {
-        console.log(locations);
-      });
-    }
-  });
+  const [position, setPosition] = useState<Location.LocationObjectCoords>();
 
-  RNLocation.getLatestLocation().then(console.log);
+  useEffect(() => {
+    // Permissions are requested from the login page
+    Location.getCurrentPositionAsync().then(location =>
+      setPosition(location.coords),
+    );
+  }, [Location, setPosition]);
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.mapStyle} />
+      <MapView
+        style={styles.mapStyle}
+        region={
+          position
+            ? {
+                latitude: position.latitude,
+                longitude: position.longitude,
+                latitudeDelta: 0,
+                longitudeDelta: 0,
+              }
+            : undefined
+        }>
+        {position && (
+          <MarkerAnimated
+            coordinate={{
+              latitude: position.latitude,
+              longitude: position.longitude,
+            }}
+          />
+        )}
+      </MapView>
     </View>
   );
 }

@@ -15,8 +15,9 @@
         android:value="AIzaSyC5K8oefgx7p-owCOLThF38oSnYhQAPFVI"/>
 
       <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
       <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-      
+
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
