@@ -5,6 +5,9 @@ import {
   ContextChildren,
 } from "../../commons/types";
 import DataStore from "./DataStore";
+import { displayErrorToast } from "../tools";
+import { API_ACCOUNTS, API_PREFIX, URL_BACKEND } from "./paths";
+import { useStoreDataAccounts } from "./hooks";
 
 interface IMiddlewareContext {
   user: Account | null;
@@ -19,44 +22,54 @@ interface IProps {
   children?: ContextChildren;
 }
 
-const SESSION_STORAGE_USER = "user_storage";
-
 const MiddlewareContext = ({ children }: IProps) => {
   const [user, setUserState] = useState<Account | null>(null);
-  const [pendingLogout, startLogout] = useTransition();
+  const [pendingUserTransition, startUserTransition] = useTransition();
 
-  // State reducer (local storage + logout)
+  // Init data stores static logs
+  useStoreDataAccounts();
+
+  // State reducer (login + logout)
   const setUser = async (user: Account | null): Promise<void | boolean> => {
     if (!user) {
-      startLogout(() => {
-        DataStore.doFetch(
-          API_PREFIX + API_ACCOUNTS + "/logout",
-          async (url) =>
-            await fetch(url, {
-              method: "DELETE",
+        startUserTransition(() => {
+            DataStore.doFetch(
+            `${URL_BACKEND}/${API_PREFIX}/${API_ACCOUNTS}/logout`,
+            async (url) =>
+                await fetch(url, {
+                    method: "DELETE",
+                })
+            )
+            .then(() => {
+                setUserState(user);
             })
-        )
-          .then(() => {
-            setUserState(user);
-            localStorage.removeItem(SESSION_STORAGE_USER);
-          })
-          // .catch(() => toasterErrorLogout.toast("Internal error"));
-      });
-      return pendingLogout;
+        });
     } else {
-      localStorage.setItem(SESSION_STORAGE_USER, JSON.stringify(user));
-      setUserState(user);
+        startUserTransition(() => {
+            DataStore.doFetch(
+            `${URL_BACKEND}/${API_PREFIX}/${API_ACCOUNTS}/login`,
+            async (url) =>
+                await fetch(url, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        email: user.email,
+                        password: user.password
+                    })
+                })
+            )
+            .then(async res => {
+                if (res!.status == 404) {
+                    throw Error("Bad credentials");
+                } else {
+                    return await res!.json();
+                }
+            })
+            .then(json => setUserState(json))
+            .catch(displayErrorToast)
+        });
     }
+    return pendingUserTransition;
   };
-
-  // Init state from local storage
-  if (!user) {
-    let storage = localStorage.getItem(SESSION_STORAGE_USER);
-    if (!!storage) {
-      storage = JSON.parse(storage);
-      setUserState(storage as any as Account);
-    }
-  }
 
   return (
     <SetupMiddlewareContext.Provider

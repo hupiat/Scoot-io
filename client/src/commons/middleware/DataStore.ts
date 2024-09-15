@@ -7,7 +7,7 @@ import {
 // Observable pattern
 export default class DataStore<T extends BusinessObject> {
   private static logError: (details: Error) => void;
-  private static logInfo: <T>(op: WorkflowStep, obj: T) => void;
+  private static logInfo: <T extends BusinessObject>(op: WorkflowStep, obj: T) => void;
 
   private url?: string;
   private subscribers = new Set<(data: Set<T>) => void>();
@@ -34,7 +34,7 @@ export default class DataStore<T extends BusinessObject> {
   constructor(
     url: string,
     logError: (details: Error) => void,
-    logInfo: <T>(op: WorkflowStep, obj: T) => void,
+    logInfo: <T extends BusinessObject>(op: WorkflowStep, obj: T) => void,
     apiPrefix?: string
   ) {
     DataStore.logError = logError;
@@ -165,7 +165,7 @@ export default class DataStore<T extends BusinessObject> {
       obj.id = (await res.json()).id;
       this.data!.add(obj as T);
       this.notify();
-      DataStore.logInfo("add", obj);
+      DataStore.logInfo("add", obj as BusinessObject);
       return res;
     });
   }

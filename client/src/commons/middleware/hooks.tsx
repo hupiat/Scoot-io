@@ -12,6 +12,8 @@ import {
     BusinessObject,
     WorkflowStep,
   } from "../types";
+import Toast from "react-native-toast-message";
+import { API_ACCOUNTS, API_PREFIX, URL_BACKEND } from "./paths";
   
   type StoreSnapshot<T extends BusinessObject> = [Array<T> | null, DataStore<T>];
   
@@ -66,19 +68,33 @@ import {
     fetchAll: boolean = true
   ): StoreSnapshot<T> => {
   
-    // TODO : toasts
+    function logInfo<T extends BusinessObject>(op: WorkflowStep, obj: T) {
+        Toast.show({
+            type: "success",
+            text1: op.toLocaleUpperCase(),
+            text2: "Object has been updated in database : " + obj.dateCreation
+        })
+    }
+
+    const logError = (details: Error) => {
+        Toast.show({
+            type: "error",
+            text1: "ERROR : " + details.name,
+            text2: details.message
+        })
+    }
   
     const store = useRef<DataStore<T>>(
       new DataStore<T>(
         path,
-        () => {},
-        () => {},
-        API_PREFIX
+        logError,
+        logInfo,
+        URL_BACKEND + API_PREFIX
       )
     );
   
     useEffect(() => {
-      store.current.formatUrlThenSet(path, API_PREFIX);
+      store.current.formatUrlThenSet(path, URL_BACKEND + API_PREFIX);
     }, [path]);
   
     const data = useStoreData(store.current, fetchAll);
