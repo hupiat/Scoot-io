@@ -1,13 +1,12 @@
-import {
-  BusinessObject,
-  WithoutId,
-  WorkflowStep
-} from "../types";
+import {BusinessObject, WithoutId, WorkflowStep} from '../types';
 
 // Observable pattern
 export default class DataStore<T extends BusinessObject> {
   private static logError: (details: Error) => void;
-  private static logInfo: <T extends BusinessObject>(op: WorkflowStep, obj: T) => void;
+  private static logInfo: <T extends BusinessObject>(
+    op: WorkflowStep,
+    obj: T,
+  ) => void;
 
   private url?: string;
   private subscribers = new Set<(data: Set<T>) => void>();
@@ -21,12 +20,12 @@ export default class DataStore<T extends BusinessObject> {
     this.url = undefined;
     if (apiPrefix) {
       url = url.trim();
-      const split = url.split("/");
+      const split = url.split('/');
       if (split[0].toLocaleLowerCase() === apiPrefix.toLocaleLowerCase()) {
         split.shift();
-        url = split.join("/");
+        url = split.join('/');
       }
-      this.url = apiPrefix + "/" + url;
+      this.url = apiPrefix + '/' + url;
     }
     return this;
   }
@@ -35,7 +34,7 @@ export default class DataStore<T extends BusinessObject> {
     url: string,
     logError: (details: Error) => void,
     logInfo: <T extends BusinessObject>(op: WorkflowStep, obj: T) => void,
-    apiPrefix?: string
+    apiPrefix?: string,
   ) {
     DataStore.logError = logError;
     DataStore.logInfo = logInfo;
@@ -59,7 +58,7 @@ export default class DataStore<T extends BusinessObject> {
   static async doFetch(
     url: string,
     callback: (url: string) => Promise<Response>,
-    shouldLog: boolean = true
+    shouldLog: boolean = true,
   ): Promise<Response | undefined> {
     try {
       return await callback(url);
@@ -90,7 +89,7 @@ export default class DataStore<T extends BusinessObject> {
 
   private notify(): void {
     if (this.isSync()) {
-      this.subscribers.forEach((notify) => notify(this.data!));
+      this.subscribers.forEach(notify => notify(this.data!));
     }
   }
 
@@ -105,7 +104,7 @@ export default class DataStore<T extends BusinessObject> {
   emptySynchronize(): void {
     if (!this.hasAPI()) {
       throw Error(
-        "DataStore#emptySynchronize: cannot perform unless API uri is provided"
+        'DataStore#emptySynchronize: cannot perform unless API uri is provided',
       );
     }
     this.data = new Set<T>();
@@ -115,7 +114,7 @@ export default class DataStore<T extends BusinessObject> {
   // Loads from server
 
   async fetchAll(): Promise<void> {
-    await DataStore.doFetch(this.url!, async (url) => {
+    await DataStore.doFetch(this.url!, async url => {
       this.data?.clear(); // Better cleaning up for js engine
       this.data = undefined;
       const res = await fetch(url);
@@ -126,7 +125,7 @@ export default class DataStore<T extends BusinessObject> {
   }
 
   async fetchById(id: number): Promise<void> {
-    await DataStore.doFetch(this.url! + "/" + id, async (url) => {
+    await DataStore.doFetch(this.url! + '/' + id, async url => {
       const res = await fetch(url);
       const obj = await res.json();
       if (this.data) {
@@ -139,7 +138,7 @@ export default class DataStore<T extends BusinessObject> {
       }
       this.data.add(obj);
       this.notify();
-      DataStore.logInfo("read", obj);
+      DataStore.logInfo('read', obj);
       return res;
     });
   }
@@ -150,31 +149,31 @@ export default class DataStore<T extends BusinessObject> {
   private checkForSyncBeforeProcessing(): void {
     if (!this.isSync()) {
       throw Error(
-        "DataStore#checkForSyncBeforeProcessing: cannot perform unless data is fetched"
+        'DataStore#checkForSyncBeforeProcessing: cannot perform unless data is fetched',
       );
     }
   }
 
   async add(obj: WithoutId<T>): Promise<void> {
     this.checkForSyncBeforeProcessing();
-    await DataStore.doFetch(this.url!, async (url) => {
+    await DataStore.doFetch(this.url!, async url => {
       const res = await fetch(url, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(obj),
       });
       obj.id = (await res.json()).id;
       this.data!.add(obj as T);
       this.notify();
-      DataStore.logInfo("add", obj as BusinessObject);
+      DataStore.logInfo('add', obj as BusinessObject);
       return res;
     });
   }
 
   async update(obj: T): Promise<void> {
     this.checkForSyncBeforeProcessing();
-    await DataStore.doFetch(this.url!, async (url) => {
+    await DataStore.doFetch(this.url!, async url => {
       const res = await fetch(url, {
-        method: "PUT",
+        method: 'PUT',
         body: JSON.stringify(obj),
       });
       obj = await res.json();
@@ -184,7 +183,7 @@ export default class DataStore<T extends BusinessObject> {
       }
       this.data!.add(obj);
       this.notify();
-      DataStore.logInfo("edit", obj);
+      DataStore.logInfo('edit', obj);
       return res;
     });
   }
@@ -192,9 +191,9 @@ export default class DataStore<T extends BusinessObject> {
   async delete(id: number): Promise<Boolean> {
     this.checkForSyncBeforeProcessing();
     let ok = false;
-    await DataStore.doFetch(this.url! + "/" + id, async (url) => {
+    await DataStore.doFetch(this.url! + '/' + id, async url => {
       const res = await fetch(url, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       const local = this.getById(id);
       ok = res.ok;
@@ -202,7 +201,7 @@ export default class DataStore<T extends BusinessObject> {
         // query should throws an exception but nvm
         this.data!.delete(local);
         this.notify();
-        DataStore.logInfo("delete", local);
+        DataStore.logInfo('delete', local);
       }
       return res;
     });
