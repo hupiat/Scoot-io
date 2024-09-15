@@ -29,6 +29,10 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 	@Nullable
 	private byte[] picture;
 
+	public AccountEntity() {
+		super();
+	}
+
 	public AccountEntity(String email, String username, String password) {
 		super();
 		this.email = email;

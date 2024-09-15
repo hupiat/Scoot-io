@@ -17,13 +17,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hupiat.scootio.server.core.controllers.ICommonController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-@RestController(ICommonController.API_PREFIX + "/accounts")
+@RequestMapping(ICommonController.API_PREFIX + "/accounts")
+@RestController
 public class AccountController implements ICommonController<AccountEntity> {
 	
 	private final AccountService service;

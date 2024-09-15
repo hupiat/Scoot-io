@@ -23,7 +23,7 @@ export interface BusinessObject {
 export interface Account extends BusinessObject {
   email: string;
   username: string;
-  picture: ArrayBuffer;
+  picture?: ArrayBuffer;
   // Will not be present from fetching, even encrypted
   password?: string;
 }
@@ -32,5 +32,9 @@ export interface Account extends BusinessObject {
 // OTHERS (utilities)
 // -----------------------------------------------------
 
-export type WithoutId<T extends BusinessObject> = Omit<T, 'id'> &
-  Partial<Pick<T, 'id'>>;
+export type WithoutId<T extends BusinessObject> = Omit<
+  Omit<T, 'dateCreation'>,
+  'id'
+> &
+  Partial<Pick<T, 'id'>> &
+  Partial<Pick<T, 'dateCreation'>>;

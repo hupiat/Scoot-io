@@ -160,8 +160,11 @@ export default class DataStore<T extends BusinessObject> {
       const res = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(obj),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      obj.id = (await res.json()).id;
+      obj.id = (await res!.json()).id;
       this.data!.add(obj as T);
       this.notify();
       DataStore.logInfo('add', obj as BusinessObject);
@@ -175,6 +178,9 @@ export default class DataStore<T extends BusinessObject> {
       const res = await fetch(url, {
         method: 'PUT',
         body: JSON.stringify(obj),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       obj = await res.json();
       const local = this.getById(obj.id);

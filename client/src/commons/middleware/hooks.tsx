@@ -69,7 +69,7 @@ const useStoreDataCreate = <T extends BusinessObject>(
     Toast.show({
       type: 'success',
       text1: op.toLocaleUpperCase(),
-      text2: 'Object has been updated in database : ' + obj.dateCreation,
+      text2: 'Object has been updated in database',
     });
   }
 
@@ -82,11 +82,11 @@ const useStoreDataCreate = <T extends BusinessObject>(
   };
 
   const store = useRef<DataStore<T>>(
-    new DataStore<T>(path, logError, logInfo, URL_BACKEND + API_PREFIX),
+    new DataStore<T>(path, logError, logInfo, URL_BACKEND + '/' + API_PREFIX),
   );
 
   useEffect(() => {
-    store.current.formatUrlThenSet(path, URL_BACKEND + API_PREFIX);
+    store.current.formatUrlThenSet(path, URL_BACKEND + '/' + API_PREFIX);
   }, [path]);
 
   const data = useStoreData(store.current, fetchAll);

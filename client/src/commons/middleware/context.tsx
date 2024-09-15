@@ -4,14 +4,14 @@ import {Account, ContextChildren} from '../../commons/types';
 import DataStore from './DataStore';
 import {displayErrorToast} from '../tools';
 import {API_ACCOUNTS, API_PREFIX, URL_BACKEND} from './paths';
-import {StoreSnapshot, useStoreDataAccounts} from './hooks';
+import {useStoreDataAccounts} from './hooks';
 
 interface IMiddlewareContext {
   user: Account | null;
   setUser: (user: Account | null) => Promise<void | boolean>;
   // Note this datastore should always be fetched from context for
   // performances concern
-  storeDataAccounts: StoreSnapshot<Account>;
+  storeDataAccounts: DataStore<Account>;
 }
 
 const SetupMiddlewareContext = React.createContext<
@@ -27,7 +27,7 @@ const MiddlewareContext = ({children}: IProps) => {
   const [pendingUserTransition, startUserTransition] = useTransition();
 
   // Init data stores static logs
-  const storeDataAccounts = useStoreDataAccounts();
+  const [, storeDataAccounts] = useStoreDataAccounts();
 
   // State reducer (login + logout)
   const setUser = async (user: Account | null): Promise<void | boolean> => {
@@ -56,6 +56,9 @@ const MiddlewareContext = ({children}: IProps) => {
                 email: user.email,
                 password: user.password,
               }),
+              headers: {
+                'Content-Type': 'application/json',
+              },
             }),
         )
           .then(async res => {

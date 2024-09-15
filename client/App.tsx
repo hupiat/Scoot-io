@@ -6,11 +6,13 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import PageLogin from './src/components/PageLogin';
-import MiddlewareContext from './src/commons/middleware/context';
+import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import MiddlewareContext, {
+  useMiddlewareContext,
+} from './src/commons/middleware/context';
 import Toast from 'react-native-toast-message';
+import Pages from './src/components/Pages';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -26,7 +28,7 @@ function App(): React.JSX.Element {
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={backgroundStyle.backgroundColor}
         />
-        <PageLogin />
+        <Pages />
       </SafeAreaView>
       <Toast />
     </MiddlewareContext>

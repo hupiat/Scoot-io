@@ -34,7 +34,7 @@ public class SecurityConfigAdapter {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests()
-				.requestMatchers(ICommonController.API_PREFIX + "/accounts" + "/login")
+				.requestMatchers(HttpMethod.POST, ICommonController.API_PREFIX + "/accounts" + "/login", ICommonController.API_PREFIX + "/accounts")
 				.permitAll().anyRequest().authenticated().and()
 				.logout(logout -> logout.logoutUrl(ICommonController.API_PREFIX + "/accounts" + "/logout"))
 				.formLogin(AbstractHttpConfigurer::disable).cors(new Customizer<CorsConfigurer<HttpSecurity>>() {

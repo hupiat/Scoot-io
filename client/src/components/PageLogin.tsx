@@ -7,14 +7,14 @@ import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account} from '../commons/types';
 import Toast from 'react-native-toast-message';
 import {FloatingAction} from 'react-native-floating-action';
-import {validateEmail} from '../commons/tools';
+import {validateEmail, validatePassword} from '../commons/tools';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
   const [mail, setMail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
-  const {user, setUser} = useMiddlewareContext();
+  const {user, setUser, storeDataAccounts} = useMiddlewareContext();
 
   if (!!user) {
     Toast.show({
@@ -28,17 +28,22 @@ export default function PageLogin() {
     if (isSuscribing) {
       return (
         validateEmail(mail) &&
-        !!password &&
-        !!passwordConfirm &&
+        validatePassword(password) &&
+        validatePassword(passwordConfirm) &&
         password === passwordConfirm
       );
     } else {
-      return validateEmail(mail) && !!password;
+      return validateEmail(mail) && validatePassword(password);
     }
   };
 
   const handlePress = () => {
     if (isSuscribing) {
+      storeDataAccounts.add({
+        email: mail,
+        username: mail,
+        password: passwordConfirm,
+      });
     } else {
       setUser({
         email: mail,
