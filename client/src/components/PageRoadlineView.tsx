@@ -1,10 +1,9 @@
 import {View} from '@ant-design/react-native';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, ImageURISource, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import * as Location from 'expo-location';
 import MapViewDirections from 'react-native-maps-directions';
-import MarkerScooter from '../assets/marker.png';
 
 const TIMEOUT_DELAY_LOCATION_MS = 500;
 
