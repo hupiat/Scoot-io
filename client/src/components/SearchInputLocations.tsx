@@ -11,9 +11,13 @@ import {Place} from '../commons/types';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;
+  hideResults: boolean;
 }
 
-export default function SearchInputLocations({onSelectPlace}: IProps) {
+export default function SearchInputLocations({
+  onSelectPlace,
+  hideResults,
+}: IProps) {
   const [query, setQuery] = useState<string>('');
   const [data, setData] = useState<[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -69,13 +73,16 @@ export default function SearchInputLocations({onSelectPlace}: IProps) {
       <AutocompleteInput
         data={data}
         value={query}
+        hideResults={hideResults}
         containerStyle={styles.autocompleteContainer}
         inputContainerStyle={styles.autocompleteContainer}
         onChangeText={setQuery}
         flatListProps={{
           keyExtractor: (_, i: number) => String(i),
           renderItem: ({item}: {item: any}) => (
-            <TouchableOpacity onPress={() => handleSelect(item)}>
+            <TouchableOpacity
+              onPress={() => handleSelect(item)}
+              style={styles.autoCompleteItem}>
               <Text>{item.description}</Text>
             </TouchableOpacity>
           ),
@@ -94,5 +101,8 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 1,
     width: '100%',
+  },
+  autoCompleteItem: {
+    height: 50,
   },
 });

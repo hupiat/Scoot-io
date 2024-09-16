@@ -63,7 +63,7 @@ export default function PageRoadlineView() {
           showsIndoors
           showsPointsOfInterest
           showsMyLocationButton
-          initialRegion={region}>
+          region={region}>
           {position && (
             <Marker
               coordinate={{
@@ -86,6 +86,7 @@ export default function PageRoadlineView() {
       </View>
       <View style={styles.searchContainer}>
         <SearchInputLocations
+          hideResults={!!destination}
           onSelectPlace={place =>
             setDestination({
               latitude: place.geometry.latitude,
