@@ -6,9 +6,9 @@ import {
   useSyncExternalStore,
 } from 'react';
 import DataStore from './DataStore';
-import {Account, BusinessObject, WorkflowStep} from '../types';
+import {Account, BusinessObject, Ride, WorkflowStep} from '../types';
 import Toast from 'react-native-toast-message';
-import {API_ACCOUNTS, API_PREFIX, URL_BACKEND} from './paths';
+import {API_ACCOUNTS, API_PREFIX, API_RIDES, URL_BACKEND} from './paths';
 
 export type StoreSnapshot<T extends BusinessObject> = [
   Array<T> | null,
@@ -102,3 +102,6 @@ const useStoreDataCreate = <T extends BusinessObject>(
 
 export const useStoreDataAccounts = (): StoreSnapshot<Account> =>
   useStoreDataCreate<Account>(API_ACCOUNTS, false);
+
+export const useStoreDataRides = (): StoreSnapshot<Ride> =>
+  useStoreDataCreate<Ride>(API_RIDES);

@@ -46,7 +46,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 
 	@Override
-	public AccountEntity getById(@PathVariable int id) {
+	public AccountEntity getById(@PathVariable long id) {
 		return repository.findById(id).orElseThrow();
 	}
 
@@ -61,7 +61,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 
 	@Override
-	public void delete(int id) {
+	public void delete(@PathVariable long id) {
 		repository.deleteById(id);
 	}
 

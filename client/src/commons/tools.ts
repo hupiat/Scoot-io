@@ -25,22 +25,3 @@ export const validatePassword = (pw: string): boolean => {
     pw.length > 8
   );
 };
-
-export const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
-  var binaryString = atob(base64);
-  var bytes = new Uint8Array(binaryString.length);
-  for (var i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes.buffer;
-};
-
-export const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  var binary = '';
-  var bytes = new Uint8Array(buffer);
-  var len = bytes.byteLength;
-  for (var i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-};

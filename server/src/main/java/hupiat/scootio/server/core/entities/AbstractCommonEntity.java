@@ -18,15 +18,15 @@ import jakarta.persistence.InheritanceType;
 public abstract class AbstractCommonEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	protected int id;
+	protected long id;
 	
 	protected Date dateCreation = Date.from(Instant.now());
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

@@ -3,12 +3,7 @@ import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account, WithoutId} from '../commons/types';
-import {
-  arrayBufferToBase64,
-  base64ToArrayBuffer,
-  validateEmail,
-  validatePassword,
-} from '../commons/tools';
+import {validateEmail, validatePassword} from '../commons/tools';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 

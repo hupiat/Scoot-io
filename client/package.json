@@ -13,7 +13,7 @@
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.2.3",
-    "btoa": "^1.2.1",
+    "dayjs": "^1.11.13",
     "expo-image-picker": "^15.0.7",
     "expo-location": "~17.0.1",
     "react": "18.3.1",

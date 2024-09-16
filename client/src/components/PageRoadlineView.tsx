@@ -10,12 +10,14 @@ import {GeoCode} from '../commons/types';
 import Toast from 'react-native-toast-message';
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
+import {useStoreDataRides} from '../commons/middleware/hooks';
 
 const TIMEOUT_DELAY_LOCATION_MS = 500;
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
   const {destination, setDestination, region, setRegion} = useRideContext();
+  const [, storeDataRides] = useStoreDataRides();
 
   useEffect(() => {
     if (position) {
@@ -46,6 +48,7 @@ export default function PageRoadlineView() {
         type: 'info',
         text1: 'Ride',
         text2: 'You have been arrived',
+        autoHide: false,
       });
     }
   }, [position]);
@@ -126,6 +129,20 @@ export default function PageRoadlineView() {
                   Modal.alert('Confirmation', 'Cancel the current ride ?', [
                     {text: 'Cancel', onPress: () => {}, style: 'cancel'},
                     {text: 'OK', onPress: () => setDestination(null)},
+                  ]);
+                  break;
+                case 'ride_save':
+                  Modal.prompt('Confirmation', 'Save the current ride ?', [
+                    {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                    {
+                      text: 'OK',
+                      // Typing error in antd
+                      onPress: (value: string) =>
+                        storeDataRides.add({
+                          name: value,
+                          destination: destination,
+                        }),
+                    },
                   ]);
                   break;
               }

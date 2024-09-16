@@ -39,6 +39,11 @@ export interface Account extends BusinessObject {
   password?: string;
 }
 
+export interface Ride extends BusinessObject {
+  name: string;
+  destination: GeoCode;
+}
+
 // -----------------------------------------------------
 // OTHERS (utilities)
 // -----------------------------------------------------

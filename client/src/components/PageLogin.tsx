@@ -12,6 +12,7 @@ import {
   validatePassword,
 } from '../commons/tools';
 import * as Location from 'expo-location';
+import Toast from 'react-native-toast-message';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
@@ -44,6 +45,13 @@ export default function PageLogin() {
           username: mail,
           password: passwordConfirm,
         })
+        .then(() =>
+          Toast.show({
+            type: 'success',
+            text1: 'Suscribe',
+            text2: 'You have been suscribed !',
+          }),
+        )
         .catch(() =>
           displayErrorToast({
             name: 'Error',
@@ -111,11 +119,11 @@ const styles = StyleSheet.create({
     height: 250,
     marginHorizontal: 30,
     justifyContent: 'space-around',
-    top: 25,
+    top: 50,
   },
   logo: {
     width: 400,
     height: 400,
-    top: 50,
+    top: 85,
   },
 });

@@ -19,7 +19,7 @@ public interface ICommonController<E extends AbstractCommonEntity> {
 	List<E> getAll();
 	
 	@GetMapping("/{id}")
-	E getById(int id);
+	E getById(long id);
 	
 	@PostMapping
 	E add(E entity);
@@ -28,5 +28,5 @@ public interface ICommonController<E extends AbstractCommonEntity> {
 	E update(E entity);	
 	
 	@DeleteMapping("/{id}")
-	void delete(int id);
+	void delete(long id);
 }
