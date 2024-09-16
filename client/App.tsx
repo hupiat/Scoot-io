@@ -6,30 +6,14 @@
  */
 
 import React from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import MiddlewareContext, {
-  useMiddlewareContext,
-} from './src/commons/middleware/context';
+import MiddlewareContext from './src/commons/middleware/context';
 import Toast from 'react-native-toast-message';
 import Pages from './src/components/Pages';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
     <MiddlewareContext>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <Pages />
-      </SafeAreaView>
+      <Pages />
       <Toast />
     </MiddlewareContext>
   );

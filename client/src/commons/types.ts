@@ -15,6 +15,17 @@ export type ResponseType = 'json' | 'text' | 'blob';
 // BUSINESS
 // --------------------------------------
 
+export type GeoCode = {
+  latitude: number;
+  longitude: number;
+};
+
+export interface Place {
+  name: string;
+  address: string;
+  geometry: GeoCode;
+}
+
 export interface BusinessObject {
   id: number;
   dateCreation: Date;
