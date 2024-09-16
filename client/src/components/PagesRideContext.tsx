@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    flexGrow: 0.935,
+    flexGrow: 1,
     justifyContent: 'space-between',
   },
 });

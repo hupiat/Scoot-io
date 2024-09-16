@@ -1,7 +1,7 @@
-import {View} from '@ant-design/react-native';
+import {Icon, Modal, View} from '@ant-design/react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Dimensions, StyleSheet, Text} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import {Dimensions, StyleSheet} from 'react-native';
+import MapView, {Marker, Region} from 'react-native-maps';
 import * as Location from 'expo-location';
 import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
@@ -9,25 +9,35 @@ import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
 import {GeoCode} from '../commons/types';
 import Toast from 'react-native-toast-message';
 import {useRideContext} from '../commons/rides/context';
+import {FloatingAction} from 'react-native-floating-action';
 
 const TIMEOUT_DELAY_LOCATION_MS = 500;
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
-  const {destination, setDestination} = useRideContext();
+  const {destination, setDestination, region, setRegion} = useRideContext();
 
   useEffect(() => {
-    // Permissions are requested from the login page
-    let timeoutId: NodeJS.Timeout;
-    const timeout = () => {
-      Location.getCurrentPositionAsync().then(location => {
-        setPosition(location.coords);
+    if (position) {
+      setRegion({
+        latitude: position.latitude,
+        longitude: position.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
       });
-      timeoutId = setTimeout(timeout, TIMEOUT_DELAY_LOCATION_MS);
-    };
-    timeout();
-    return () => clearTimeout(timeoutId);
-  }, [Location, setPosition]);
+    }
+  }, [position]);
+
+  useEffect(() => {
+    Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.BestForNavigation,
+        timeInterval: TIMEOUT_DELAY_LOCATION_MS,
+        distanceInterval: 1,
+      },
+      location => setPosition(location.coords),
+    );
+  }, [setPosition]);
 
   useEffect(() => {
     if (position === destination) {
@@ -53,17 +63,7 @@ export default function PageRoadlineView() {
           showsIndoors
           showsPointsOfInterest
           showsMyLocationButton
-          // TODO : buggy when switching tab (reset), to store in state
-          initialRegion={
-            position
-              ? {
-                  latitude: position.latitude,
-                  longitude: position.longitude,
-                  latitudeDelta: 0.01,
-                  longitudeDelta: 0.01,
-                }
-              : undefined
-          }>
+          initialRegion={region}>
           {position && (
             <Marker
               coordinate={{
@@ -94,6 +94,44 @@ export default function PageRoadlineView() {
           }
         />
       </View>
+      {!!destination && (
+        <View>
+          <FloatingAction
+            actions={[
+              {
+                name: 'ride_cancel',
+                text: 'Cancel ride',
+                icon: <Icon name="poweroff" />,
+              },
+              {
+                name: 'ride_save',
+                text: 'Save ride',
+                icon: <Icon name="save" />,
+              },
+              {
+                name: 'ride_plothole',
+                text: 'Mark plothole as a danger',
+                icon: <Icon name="warning" />,
+              },
+              {
+                name: 'ride_dense_traffic',
+                text: 'Mark dense traffic',
+                icon: <Icon name="car" />,
+              },
+            ]}
+            onPressItem={name => {
+              switch (name) {
+                case 'ride_cancel':
+                  Modal.alert('Confirmation', 'Cancel the current ride ?', [
+                    {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                    {text: 'OK', onPress: () => setDestination(null)},
+                  ]);
+                  break;
+              }
+            }}
+          />
+        </View>
+      )}
     </>
   );
 }

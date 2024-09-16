@@ -9,12 +9,15 @@ import React from 'react';
 import MiddlewareContext from './src/commons/middleware/context';
 import Toast from 'react-native-toast-message';
 import Pages from './src/components/Pages';
+import {Provider} from '@ant-design/react-native';
 
 function App(): React.JSX.Element {
   return (
     <MiddlewareContext>
-      <Pages />
-      <Toast />
+      <Provider>
+        <Pages />
+        <Toast position="bottom" />
+      </Provider>
     </MiddlewareContext>
   );
 }
