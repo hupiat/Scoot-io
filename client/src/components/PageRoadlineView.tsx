@@ -33,7 +33,7 @@ export default function PageRoadlineView() {
       setDestination(null);
       Toast.show({
         type: 'info',
-        text1: 'Trip',
+        text1: 'Ride',
         text2: 'You have been arrived',
       });
     }
@@ -52,6 +52,7 @@ export default function PageRoadlineView() {
           showsIndoors
           showsPointsOfInterest
           showsMyLocationButton
+          // TODO : buggy when switching tab (reset), to store in state
           initialRegion={
             position
               ? {
@@ -72,16 +73,14 @@ export default function PageRoadlineView() {
               style={{width: 50, height: 50}}
             />
           )}
-          {destination && (
-            <MapViewDirections
-              apikey={GOOGLE_WEB_API_KEY}
-              mode="BICYCLING"
-              optimizeWaypoints
-              origin={position}
-              destination={destination}
-              strokeWidth={5}
-            />
-          )}
+          <MapViewDirections
+            apikey={GOOGLE_WEB_API_KEY}
+            mode="BICYCLING"
+            optimizeWaypoints
+            origin={position}
+            destination={destination || undefined}
+            strokeWidth={5}
+          />
         </MapView>
       </View>
       <View style={styles.searchContainer}>

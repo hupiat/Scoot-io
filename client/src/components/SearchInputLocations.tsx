@@ -1,11 +1,5 @@
 import React, {useDeferredValue, useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AutocompleteInput from 'react-native-autocomplete-input';
 import DataStore from '../commons/middleware/DataStore';
 import {
@@ -14,7 +8,6 @@ import {
 } from '../commons/middleware/paths';
 import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
 import {Place} from '../commons/types';
-import {Input} from '@ant-design/react-native';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;

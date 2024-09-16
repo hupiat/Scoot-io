@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import PageLogin from './PageLogin';
 import PageRoadlineView from './PageRoadlineView';
-import {TabBar, Icon, Text, View} from '@ant-design/react-native';
+import {TabBar, Icon, View} from '@ant-design/react-native';
 import {StyleSheet} from 'react-native';
+import PageRidesView from './PageRidesView';
+import PageProfileView from './PageProfileView';
 
 export default function Pages() {
   const [tab, setTab] = useState<number>(1);
@@ -14,14 +16,14 @@ export default function Pages() {
       {!user && <PageLogin />}
       {user && (
         <View style={styles.container}>
-          {tab === 0 && <PageRoadlineView />}
+          {tab === 0 && <PageRidesView />}
           {tab === 1 && <PageRoadlineView />}
-          {tab === 2 && <PageRoadlineView />}
+          {tab === 2 && <PageProfileView />}
           <View>
             <TabBar>
               <TabBar.Item
                 title="Stored rides"
-                icon={<Icon name="database" />}
+                icon={<Icon name="dashboard" />}
                 selected={tab === 0}
                 onPress={() => setTab(0)}
               />
