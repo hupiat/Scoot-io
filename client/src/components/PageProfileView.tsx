@@ -1,17 +1,29 @@
 import {Button, Card, Flex, Icon, Input} from '@ant-design/react-native';
 import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account, WithoutId} from '../commons/types';
-import {validateEmail, validatePassword} from '../commons/tools';
+import {
+  arrayBufferToBase64,
+  base64ToArrayBuffer,
+  validateEmail,
+  validatePassword,
+} from '../commons/tools';
+import Toast from 'react-native-toast-message';
+import * as ImagePicker from 'expo-image-picker';
+
+const baseTypingUser = (user: Account): WithoutId<Account> => ({
+  email: user.email,
+  username: user.username,
+  password: '',
+  picture: user.picture,
+});
 
 export default function PageProfileView() {
-  const {user} = useMiddlewareContext();
-  const [typingUser, setTypingUser] = useState<WithoutId<Account>>({
-    email: user?.email ?? '',
-    username: user?.username ?? '',
-    password: '',
-  });
+  const {user, setUser, storeDataAccounts} = useMiddlewareContext();
+  const [typingUser, setTypingUser] = useState<WithoutId<Account>>(
+    baseTypingUser(user!),
+  );
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
 
   const validateSchema = () => {
@@ -24,11 +36,58 @@ export default function PageProfileView() {
     );
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      base64: true,
+    });
+    setTypingUser({
+      ...typingUser,
+      picture: !result.canceled ? result.assets[0].base64! : undefined,
+    });
+  };
+
+  const handleSave = () => {
+    user!.username = typingUser.username;
+    user!.email = typingUser.email;
+    user!.password = typingUser.password;
+    user!.picture = typingUser.picture;
+    storeDataAccounts.update(user!).then(() => {
+      Toast.show({
+        type: 'success',
+        text1: 'UPDATE',
+        text2: 'Your profile have been updated',
+      });
+      setTypingUser(baseTypingUser(user!));
+      setPasswordConfirm('');
+    });
+  };
+
+  const handleLogout = () => {
+    setUser(null).then(() =>
+      Toast.show({
+        type: 'info',
+        text1: 'Logout',
+        text2: 'You have been logged out',
+      }),
+    );
+  };
+
   return (
     <Flex style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={pickImage}>
         <Card style={styles.avatar}>
-          <Icon name="user" style={styles.avatarIcon} />
+          {!typingUser.picture ? (
+            <Icon name="user" style={styles.avatarIcon} />
+          ) : (
+            <Image
+              source={{
+                uri: `data:image/png;base64,${typingUser.picture}`,
+              }}
+              style={styles.avatarImage}
+            />
+          )}
         </Card>
       </TouchableOpacity>
       <Text>Email</Text>
@@ -77,9 +136,18 @@ export default function PageProfileView() {
         value={passwordConfirm}
         onChangeText={setPasswordConfirm}
       />
-      <Button type="primary" disabled={!validateSchema()}>
-        Save
-      </Button>
+      <Flex>
+        <Button
+          type="primary"
+          disabled={!validateSchema()}
+          onPress={handleSave}
+          style={styles.button}>
+          Save
+        </Button>
+        <Button type="warning" onPress={handleLogout} style={styles.button}>
+          Logout
+        </Button>
+      </Flex>
     </Flex>
   );
 }
@@ -101,5 +169,13 @@ const styles = StyleSheet.create({
   },
   avatarIcon: {
     fontSize: 200,
+  },
+  avatarImage: {
+    width: 200,
+    height: 200,
+  },
+  button: {
+    marginTop: 30,
+    marginHorizontal: 15,
   },
 });

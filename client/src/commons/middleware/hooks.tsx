@@ -65,6 +65,8 @@ const useStoreDataCreate = <T extends BusinessObject>(
   path: string,
   fetchAll: boolean = true,
 ): StoreSnapshot<T> => {
+  // This one is most generic tho, and can be overrided easily
+  // by more relevant workflow
   function logInfo<T extends BusinessObject>(op: WorkflowStep, obj: T) {
     Toast.show({
       type: 'success',
@@ -73,10 +75,13 @@ const useStoreDataCreate = <T extends BusinessObject>(
     });
   }
 
+  // This one is great, and could be even more generic in details message,
+  // but still errors should not happen in production, we let them as an "error code"
+  // for the users
   const logError = (details: Error) => {
     Toast.show({
       type: 'error',
-      text1: 'ERROR : ' + details.name,
+      text1: 'ERROR WHILE UPDATING DATABASE',
       text2: details.message,
     });
   };

@@ -34,7 +34,7 @@ export interface BusinessObject {
 export interface Account extends BusinessObject {
   email: string;
   username: string;
-  picture?: ArrayBuffer;
+  picture?: string;
   // Will not be present from fetching, even encrypted
   password?: string;
 }

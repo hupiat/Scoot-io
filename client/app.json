@@ -1,4 +1,16 @@
 {
   "name": "Scootio",
-  "displayName": "Scootio"
+  "displayName": "Scootio",
+  "expo": {
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Please allow us to access your photos",
+          "cameraPermission": "Please allow us to access your camera",
+          "microphonePermission": false
+        }
+      ]
+    ]
+  }
 }
