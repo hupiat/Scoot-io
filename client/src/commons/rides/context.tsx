@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {useContext} from 'react';
-import {ContextChildren} from '../../commons/types';
+import {ContextChildren, GeoCode} from '../../commons/types';
 
-interface IRideContext {}
+interface IRideContext {
+  destination: GeoCode | null;
+  setDestination: Dispatch<SetStateAction<GeoCode | null>>;
+}
 
 const SetupRideContext = React.createContext<IRideContext | undefined>(
   undefined,
@@ -13,8 +16,12 @@ interface IProps {
 }
 
 const RideContext = ({children}: IProps) => {
+  const [destination, setDestination] = useState<GeoCode | null>(null);
+
   return (
-    <SetupRideContext.Provider value={{}}>{children}</SetupRideContext.Provider>
+    <SetupRideContext.Provider value={{destination, setDestination}}>
+      {children}
+    </SetupRideContext.Provider>
   );
 };
 

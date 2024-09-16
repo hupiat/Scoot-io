@@ -1,58 +1,19 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import PageLogin from './PageLogin';
-import PageRoadlineView from './PageRoadlineView';
-import {TabBar, Icon, View} from '@ant-design/react-native';
-import {StyleSheet} from 'react-native';
-import PageRidesView from './PageRidesView';
-import PageProfileView from './PageProfileView';
+import PagesRideContext from './PagesRideContext';
+import RideContext from '../commons/rides/context';
 
 export default function Pages() {
-  const [tab, setTab] = useState<number>(1);
   const {user} = useMiddlewareContext();
-
   return (
     <>
       {!user && <PageLogin />}
       {user && (
-        <View style={styles.container}>
-          {tab === 0 && <PageRidesView />}
-          {tab === 1 && <PageRoadlineView />}
-          {tab === 2 && <PageProfileView />}
-          <View>
-            <TabBar>
-              <TabBar.Item
-                title="Stored rides"
-                icon={<Icon name="dashboard" />}
-                selected={tab === 0}
-                onPress={() => setTab(0)}
-              />
-              <TabBar.Item
-                icon={<Icon name="branches" />}
-                title="Ride"
-                selected={tab === 1}
-                badge={'pending'}
-                onPress={() => setTab(1)}
-              />
-              <TabBar.Item
-                icon={<Icon name="eye" />}
-                title="Profile"
-                selected={tab === 2}
-                onPress={() => setTab(2)}
-              />
-            </TabBar>
-          </View>
-        </View>
+        <RideContext>
+          <PagesRideContext />
+        </RideContext>
       )}
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 0.935,
-    justifyContent: 'space-between',
-  },
-});
