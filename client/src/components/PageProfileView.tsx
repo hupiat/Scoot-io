@@ -9,7 +9,7 @@ import {
   validatePassword,
 } from '../commons/tools';
 import Toast from 'react-native-toast-message';
-import * as ImagePicker from 'expo-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const baseTypingUser = (user: Account): WithoutId<Account> => ({
   email: user.email,
@@ -36,14 +36,13 @@ export default function PageProfileView() {
   };
 
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      base64: true,
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: true,
     });
     setTypingUser({
       ...typingUser,
-      picture: !result.canceled ? result.assets[0].base64! : undefined,
+      picture: !result.didCancel ? result.assets![0].base64 : undefined,
     });
   };
 

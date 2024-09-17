@@ -2,7 +2,7 @@ import {Icon, Modal, View} from '@ant-design/react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import * as Location from 'expo-location';
+import * as Location from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
 import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
@@ -28,15 +28,8 @@ export default function PageRoadlineView() {
   }, [position]);
 
   useEffect(() => {
-    Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.BestForNavigation,
-        distanceInterval: 10,
-        mayShowUserSettingsDialog: true,
-        timeInterval: 5000,
-      },
-      location => setPosition(location.coords),
-    );
+    // TODO : opts
+    Location.watchPosition(location => setPosition(location.coords));
   }, []);
 
   return (
