@@ -3,7 +3,11 @@ import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account, WithoutId} from '../commons/types';
-import {validateEmail, validatePassword} from '../commons/tools';
+import {
+  displayErrorToast,
+  validateEmail,
+  validatePassword,
+} from '../commons/tools';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -32,7 +36,7 @@ export default function PageProfileView() {
   };
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       base64: true,
@@ -48,15 +52,23 @@ export default function PageProfileView() {
     user!.email = typingUser.email;
     user!.password = typingUser.password;
     user!.picture = typingUser.picture;
-    storeDataAccounts.update(user!).then(() => {
-      Toast.show({
-        type: 'success',
-        text1: 'UPDATE',
-        text2: 'Your profile have been updated',
-      });
-      setTypingUser(baseTypingUser(user!));
-      setPasswordConfirm('');
-    });
+    storeDataAccounts
+      .update(user!)
+      .then(() => {
+        Toast.show({
+          type: 'success',
+          text1: 'UPDATE',
+          text2: 'Your profile have been updated',
+        });
+        setTypingUser(baseTypingUser(user!));
+        setPasswordConfirm('');
+      })
+      .catch(() =>
+        displayErrorToast({
+          name: 'Error',
+          message: 'This email or username is already in use',
+        }),
+      );
   };
 
   const handleLogout = () => {

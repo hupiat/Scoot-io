@@ -16,16 +16,14 @@ AppRegistry.registerComponent(appName, () => App);
 
 registerRootComponent(App);
 
-// TODO : laggy with expo
+Font.loadAsync(
+  'antoutline',
+  // eslint-disable-next-line
+  require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
+);
 
-// Font.loadAsync(
-//   'antoutline',
-//   // eslint-disable-next-line
-//   require('@ant-design/icons-react-native/fonts/antoutline.ttf'),
-// );
-
-// Font.loadAsync(
-//   'antfill',
-//   // eslint-disable-next-line
-//   require('@ant-design/icons-react-native/fonts/antfill.ttf'),
-// );
+Font.loadAsync(
+  'antfill',
+  // eslint-disable-next-line
+  require('@ant-design/icons-react-native/fonts/antfill.ttf'),
+);

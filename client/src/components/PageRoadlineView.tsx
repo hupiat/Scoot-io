@@ -1,18 +1,15 @@
 import {Icon, Modal, View} from '@ant-design/react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
-import MapView, {Marker, Region} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import * as Location from 'expo-location';
 import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
 import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
 import {GeoCode} from '../commons/types';
-import Toast from 'react-native-toast-message';
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {useStoreDataRides} from '../commons/middleware/hooks';
-
-const TIMEOUT_DELAY_LOCATION_MS = 500;
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
@@ -34,24 +31,13 @@ export default function PageRoadlineView() {
     Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.BestForNavigation,
-        timeInterval: TIMEOUT_DELAY_LOCATION_MS,
-        distanceInterval: 1,
+        distanceInterval: 10,
+        mayShowUserSettingsDialog: true,
+        timeInterval: 5000,
       },
       location => setPosition(location.coords),
     );
-  }, [setPosition]);
-
-  useEffect(() => {
-    if (position === destination) {
-      setDestination(null);
-      Toast.show({
-        type: 'info',
-        text1: 'Ride',
-        text2: 'You have been arrived',
-        autoHide: false,
-      });
-    }
-  }, [position]);
+  }, []);
 
   return (
     <>
@@ -66,7 +52,8 @@ export default function PageRoadlineView() {
           showsIndoors
           showsPointsOfInterest
           showsMyLocationButton
-          region={region}>
+          onRegionChangeComplete={setRegion}
+          initialRegion={region}>
           {position && (
             <Marker
               coordinate={{
@@ -77,14 +64,16 @@ export default function PageRoadlineView() {
               style={{width: 50, height: 50}}
             />
           )}
-          <MapViewDirections
-            apikey={GOOGLE_WEB_API_KEY}
-            mode="BICYCLING"
-            optimizeWaypoints
-            origin={position}
-            destination={destination || undefined}
-            strokeWidth={5}
-          />
+          {position && destination && (
+            <MapViewDirections
+              apikey={GOOGLE_WEB_API_KEY}
+              mode="BICYCLING"
+              optimizeWaypoints
+              origin={position}
+              destination={destination || undefined}
+              strokeWidth={5}
+            />
+          )}
         </MapView>
       </View>
       <View style={styles.searchContainer}>
@@ -137,9 +126,9 @@ export default function PageRoadlineView() {
                     {
                       text: 'OK',
                       // Typing error in antd
-                      onPress: (value: string) =>
+                      onPress: () =>
                         storeDataRides.add({
-                          name: value,
+                          name: '',
                           destination: destination,
                         }),
                     },
