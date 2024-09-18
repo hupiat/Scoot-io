@@ -2,8 +2,9 @@ import React, {useDeferredValue, useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AutocompleteInput from 'react-native-autocomplete-input';
 import DataStore from '../commons/middleware/DataStore';
-import {API_NOMINATIM, API_PROXY} from '../commons/middleware/paths';
 import {Place} from '../commons/types';
+import {API_MAPBOX} from '../commons/middleware/paths';
+import {MAPBOX_WEB_APi_KEY} from '../commons/_local_constants';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;
@@ -22,25 +23,21 @@ export default function SearchInputLocations({
 
   useEffect(() => {
     DataStore.doFetch(
-      API_PROXY + API_NOMINATIM + 'format=json&q=' + deferredQuery,
-      async url =>
-        await fetch(url, {
-          headers: {
-            'User-Agent': 'Scootio/1.0 (hugopiatlillo@gmail.com)',
-          },
-        }),
+      API_MAPBOX + deferredQuery + '.json?access_token=' + MAPBOX_WEB_APi_KEY,
+      async url => await fetch(url),
     )
       .then(res => res?.json())
-      .then(json => setData(json));
+      .then(json => setData(json.features));
   }, [deferredQuery]);
 
   const handleSelect = (item: any) => {
+    setQuery(item.place_name);
     setSelectedPlace({
-      name: item.name,
-      address: item.display_name,
+      name: item.text,
+      address: item.place_name,
       geometry: {
-        latitude: item.lat,
-        longitude: item.lon,
+        longitude: item.center[0],
+        latitude: item.center[1],
       },
     });
   };
@@ -61,12 +58,12 @@ export default function SearchInputLocations({
         inputContainerStyle={styles.autocompleteContainer}
         onChangeText={setQuery}
         flatListProps={{
-          keyExtractor: item => item.place_id,
+          keyExtractor: item => item.id,
           renderItem: ({item}: {item: any}) => (
             <TouchableOpacity
               onPress={() => handleSelect(item)}
               style={styles.autoCompleteItem}>
-              <Text>{item.display_name}</Text>
+              <Text>{item.place_name}</Text>
             </TouchableOpacity>
           ),
         }}

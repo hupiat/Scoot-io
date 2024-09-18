@@ -46,6 +46,17 @@ export default function PageRoadlineView() {
   }, []);
 
   const handlePlaceSelect = (place: Place) => {
+    console.log(
+      API_OSRM +
+        position!.longitude +
+        ',' +
+        position!.latitude +
+        ';' +
+        place.geometry.longitude +
+        ',' +
+        place.geometry.latitude +
+        '?steps=true&geometries=polyline',
+    );
     setDestination({
       latitude: place.geometry.latitude,
       longitude: place.geometry.longitude,
@@ -59,7 +70,7 @@ export default function PageRoadlineView() {
         place.geometry.longitude +
         ',' +
         place.geometry.latitude +
-        '?steps=true',
+        '?steps=true&geometries=polyline',
       url => fetch(url),
     )
       .then(res => res?.json())
@@ -81,8 +92,6 @@ export default function PageRoadlineView() {
         setRide(coords);
       });
   };
-
-  console.log(ride);
 
   return (
     <>
