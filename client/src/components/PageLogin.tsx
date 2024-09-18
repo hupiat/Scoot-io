@@ -95,7 +95,7 @@ export default function PageLogin() {
           <Input
             placeholder="Confirm password"
             type="password"
-            prefix={<Icon name="lock" />}
+            prefix={<Icon name="unlock-alt" size={20} />}
             value={passwordConfirm}
             onChangeText={text => setPasswordConfirm(text)}
           />

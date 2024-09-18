@@ -165,6 +165,7 @@ export default class DataStore<T extends BusinessObject> {
         },
       });
       obj.id = (await res!.json()).id;
+      obj.dateCreation = (await res!.json()).dateCreation;
       this.data!.add(obj as T);
       this.notify();
       DataStore.logInfo('add', obj as BusinessObject);

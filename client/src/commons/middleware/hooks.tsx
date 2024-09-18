@@ -1,14 +1,14 @@
-import {
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import {useDeferredValue, useEffect, useRef, useSyncExternalStore} from 'react';
 import DataStore from './DataStore';
-import {Account, BusinessObject, Ride, WorkflowStep} from '../types';
+import {Account, BusinessObject, Marker, Ride, WorkflowStep} from '../types';
 import Toast from 'react-native-toast-message';
-import {API_ACCOUNTS, API_PREFIX, API_RIDES, URL_BACKEND} from './paths';
+import {
+  API_ACCOUNTS,
+  API_MARKERS,
+  API_PREFIX,
+  API_RIDES,
+  URL_BACKEND,
+} from './paths';
 
 export type StoreSnapshot<T extends BusinessObject> = [
   Array<T> | null,
@@ -102,3 +102,6 @@ export const useStoreDataAccounts = (): StoreSnapshot<Account> =>
 
 export const useStoreDataRides = (): StoreSnapshot<Ride> =>
   useStoreDataCreate<Ride>(API_RIDES);
+
+export const useStoreDataMarkers = (): StoreSnapshot<Marker> =>
+  useStoreDataCreate<Marker>(API_MARKERS);

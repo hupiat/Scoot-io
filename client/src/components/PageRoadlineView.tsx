@@ -4,15 +4,19 @@ import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker, MapPolyline} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import SearchInputLocations from './SearchInputLocations';
-import {GeoCode, Place} from '../commons/types';
+import {Marker as MarkerBusinessObject, Place} from '../commons/types';
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
-import {useStoreDataRides} from '../commons/middleware/hooks';
+import {
+  useStoreDataMarkers,
+  useStoreDataRides,
+} from '../commons/middleware/hooks';
 import {displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchGeocodeRouting} from '../commons/middleware/tools';
 
 export default function PageRoadlineView() {
+  const [markersData, setMarkersData] = useState<MarkerBusinessObject[]>();
   const {
     position,
     setPosition,
@@ -24,8 +28,15 @@ export default function PageRoadlineView() {
     setDestinationName,
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
+  const [, storeDataMarkers] = useStoreDataMarkers();
 
   const deferredPosition = useDeferredValue(position);
+
+  useEffect(() => {
+    storeDataMarkers
+      .fetchAll()
+      .then(() => setMarkersData(Array.from(storeDataMarkers.data!)));
+  }, []);
 
   useEffect(() => {
     const watchId = Geolocation.watchPosition(
@@ -40,7 +51,6 @@ export default function PageRoadlineView() {
           message: 'Could not get location',
         }),
       {
-        interval: 2000,
         enableHighAccuracy: true,
         accuracy: {
           android: 'high',
@@ -64,6 +74,13 @@ export default function PageRoadlineView() {
     });
     setRideGeometry(coords);
   };
+
+  const plotholesMarkers = markersData?.filter(
+    marker => marker.type === 'plothole',
+  );
+  const denseTrafficMarkers = markersData?.filter(
+    marker => marker.type === 'dense_traffic',
+  );
 
   return (
     <>
@@ -101,6 +118,30 @@ export default function PageRoadlineView() {
           {deferredPosition && destination && rideGeometry && (
             <MapPolyline strokeWidth={5} coordinates={rideGeometry} />
           )}
+          {plotholesMarkers &&
+            plotholesMarkers.map(marker => (
+              <Marker
+                key={marker.id}
+                coordinate={{
+                  latitude: marker.geometry.latitude,
+                  longitude: marker.geometry.longitude,
+                }}
+                image={require('../assets/marker_plothole.png')}
+                style={{width: 50, height: 50}}
+              />
+            ))}
+          {denseTrafficMarkers &&
+            denseTrafficMarkers.map(marker => (
+              <Marker
+                key={marker.id}
+                coordinate={{
+                  latitude: marker.geometry.latitude,
+                  longitude: marker.geometry.longitude,
+                }}
+                image={require('../assets/marker_dense_traffic.png')}
+                style={{width: 50, height: 50}}
+              />
+            ))}
         </MapView>
       </View>
       <View style={styles.searchContainer}>
@@ -168,6 +209,41 @@ export default function PageRoadlineView() {
                           ),
                     },
                   ]);
+                  break;
+                case 'ride_plothole':
+                  const objPlothole = {
+                    type: 'plothole',
+                    geometry: position!,
+                  };
+                  storeDataMarkers
+                    .add(objPlothole as any)
+                    .then(() =>
+                      setMarkersData([...markersData!, objPlothole as any]),
+                    )
+                    .catch(() =>
+                      displayErrorToast({
+                        name: 'Error',
+                        message: 'Already declared',
+                      }),
+                    );
+                  break;
+                case 'ride_dense_traffic':
+                  const objDenseTraffic = {
+                    type: 'dense_traffic',
+                    geometry: position!,
+                  };
+                  storeDataMarkers
+                    .add(objDenseTraffic as any)
+                    .then(() =>
+                      setMarkersData([...markersData!, objDenseTraffic as any]),
+                    )
+                    .catch(e => {
+                      console.error(e);
+                      displayErrorToast({
+                        name: 'Error',
+                        message: 'Already declared',
+                      });
+                    });
                   break;
               }
             }}

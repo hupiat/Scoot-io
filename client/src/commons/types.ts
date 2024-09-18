@@ -9,8 +9,6 @@ export type ContextChildren =
 
 export type WorkflowStep = 'read' | 'add' | 'edit' | 'delete';
 
-export type ResponseType = 'json' | 'text' | 'blob';
-
 // --------------------------------------
 // BUSINESS
 // --------------------------------------
@@ -42,6 +40,12 @@ export interface Account extends BusinessObject {
 export interface Ride extends BusinessObject {
   name: string;
   destination: GeoCode;
+}
+
+export type MarkerType = 'plothole' | 'dense_traffic';
+export interface Marker extends BusinessObject {
+  type: MarkerType;
+  geometry: GeoCode;
 }
 
 // -----------------------------------------------------
