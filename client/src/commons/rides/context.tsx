@@ -1,13 +1,10 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {useContext} from 'react';
 import {ContextChildren, GeoCode} from '../../commons/types';
-import {Region} from 'react-native-maps';
 
 interface IRideContext {
   destination: GeoCode | null;
   setDestination: Dispatch<SetStateAction<GeoCode | null>>;
-  region: Region | undefined;
-  setRegion: Dispatch<SetStateAction<Region | undefined>>;
 }
 
 const SetupRideContext = React.createContext<IRideContext | undefined>(
@@ -19,12 +16,10 @@ interface IProps {
 }
 
 const RideContext = ({children}: IProps) => {
-  const [region, setRegion] = useState<Region>();
   const [destination, setDestination] = useState<GeoCode | null>(null);
 
   return (
-    <SetupRideContext.Provider
-      value={{destination, setDestination, region, setRegion}}>
+    <SetupRideContext.Provider value={{destination, setDestination}}>
       {children}
     </SetupRideContext.Provider>
   );

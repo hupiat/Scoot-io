@@ -1,7 +1,13 @@
 import {IconOutline} from '@ant-design/icons-react-native';
 import {Button, Input} from '@ant-design/react-native';
 import React, {useState} from 'react';
-import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  Image,
+  PermissionsAndroid,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import logo from '../assets/logo.png';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account} from '../commons/types';
@@ -11,7 +17,6 @@ import {
   validateEmail,
   validatePassword,
 } from '../commons/tools';
-import * as Location from 'expo-location';
 import Toast from 'react-native-toast-message';
 
 export default function PageLogin() {
@@ -21,8 +26,11 @@ export default function PageLogin() {
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
   const {setUser, storeDataAccounts} = useMiddlewareContext();
 
-  Location.requestForegroundPermissionsAsync();
-  Location.requestBackgroundPermissionsAsync();
+  PermissionsAndroid.request('android.permission.ACCESS_COARSE_LOCATION');
+  PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION');
+  PermissionsAndroid.request('android.permission.READ_EXTERNAL_STORAGE');
+  PermissionsAndroid.request('android.permission.WRITE_EXTERNAL_STORAGE');
+  PermissionsAndroid.request('android.permission.CAMERA');
 
   const validateSchema = (): boolean => {
     if (isSuscribing) {

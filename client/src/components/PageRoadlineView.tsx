@@ -1,8 +1,8 @@
 import {Icon, Modal, View} from '@ant-design/react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
-import * as Geolocation from 'react-native-geolocation-service';
+import MapView, {Marker, Region} from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
 import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
@@ -13,8 +13,19 @@ import {useStoreDataRides} from '../commons/middleware/hooks';
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
-  const {destination, setDestination, region, setRegion} = useRideContext();
+  const [region, setRegion] = useState<Region>();
+  const {destination, setDestination} = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
+
+  useEffect(() => {
+    const watchId = Geolocation.watchPosition(location =>
+      setPosition({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }),
+    );
+    return () => Geolocation.clearWatch(watchId);
+  }, [setPosition]);
 
   useEffect(() => {
     if (position) {
@@ -27,14 +38,7 @@ export default function PageRoadlineView() {
     }
   }, [position]);
 
-  useEffect(() => {
-    // TODO : opts
-    const id = Geolocation.watchPosition(location =>
-      setPosition(location.coords),
-    );
-
-    return () => Geolocation.clearWatch(id);
-  }, []);
+  console.log(region);
 
   return (
     <>
@@ -65,7 +69,6 @@ export default function PageRoadlineView() {
             <MapViewDirections
               apikey={GOOGLE_WEB_API_KEY}
               mode="BICYCLING"
-              optimizeWaypoints
               origin={position}
               destination={destination || undefined}
               strokeWidth={5}
