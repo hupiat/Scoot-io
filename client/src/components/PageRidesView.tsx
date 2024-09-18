@@ -1,10 +1,11 @@
-import {Icon, List, Modal, View} from '@ant-design/react-native';
+import {List, Modal, View} from '@ant-design/react-native';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useStoreDataRides} from '../commons/middleware/hooks';
 import {Ride} from '../commons/types';
 import dayjs from 'dayjs';
 import {useRideContext} from '../commons/rides/context';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function PageRidesView() {
   const [data, setData] = useState<Ride[]>([]);

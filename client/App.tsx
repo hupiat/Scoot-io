@@ -10,11 +10,12 @@ import MiddlewareContext from './src/commons/middleware/context';
 import Toast from 'react-native-toast-message';
 import Pages from './src/components/Pages';
 import {Provider} from '@ant-design/react-native';
+import enUS from '@ant-design/react-native/es/locale-provider/en_US';
 
 function App(): React.JSX.Element {
   return (
     <MiddlewareContext>
-      <Provider>
+      <Provider locale={enUS}>
         <Pages />
         <Toast position="bottom" />
       </Provider>

@@ -1,7 +1,7 @@
-import {Icon, Modal, View} from '@ant-design/react-native';
+import {Modal, View} from '@ant-design/react-native';
 import React, {useDeferredValue, useEffect, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
-import MapView, {Marker, Region} from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
@@ -11,6 +11,7 @@ import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {useStoreDataRides} from '../commons/middleware/hooks';
 import {displayErrorToast} from '../commons/tools';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
@@ -104,22 +105,22 @@ export default function PageRoadlineView() {
               {
                 name: 'ride_cancel',
                 text: 'Cancel ride',
-                icon: <Icon name="poweroff" />,
+                icon: <Icon name="power-off" color={'white'} size={15} />,
               },
               {
                 name: 'ride_save',
                 text: 'Save ride',
-                icon: <Icon name="save" />,
+                icon: <Icon name="save" color={'white'} size={15} />,
               },
               {
                 name: 'ride_plothole',
                 text: 'Mark plothole as a danger',
-                icon: <Icon name="warning" />,
+                icon: <Icon name="warning" color={'white'} size={15} />,
               },
               {
                 name: 'ride_dense_traffic',
                 text: 'Mark dense traffic',
-                icon: <Icon name="car" />,
+                icon: <Icon name="car" color={'white'} size={15} />,
               },
             ]}
             onPressItem={name => {

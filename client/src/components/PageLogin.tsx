@@ -1,4 +1,3 @@
-import {IconOutline} from '@ant-design/icons-react-native';
 import {Button, Input} from '@ant-design/react-native';
 import React, {useState} from 'react';
 import {
@@ -18,6 +17,7 @@ import {
   validatePassword,
 } from '../commons/tools';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
@@ -80,14 +80,14 @@ export default function PageLogin() {
         <Input
           placeholder="E-mail"
           type="email-address"
-          prefix={<IconOutline name="mail" />}
+          prefix={<Icon name="user-secret" size={20} />}
           value={mail}
           onChangeText={text => setMail(text)}
         />
         <Input
           placeholder="Password"
           type="password"
-          prefix={<IconOutline name="lock" />}
+          prefix={<Icon name="unlock-alt" size={20} />}
           value={password}
           onChangeText={text => setPassword(text)}
         />
@@ -95,7 +95,7 @@ export default function PageLogin() {
           <Input
             placeholder="Confirm password"
             type="password"
-            prefix={<IconOutline name="lock" />}
+            prefix={<Icon name="lock" />}
             value={passwordConfirm}
             onChangeText={text => setPasswordConfirm(text)}
           />

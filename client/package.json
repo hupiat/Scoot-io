@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.2.3",
     "dayjs": "^1.11.13",
     "react": "18.3.1",
@@ -21,7 +20,8 @@
     "react-native-image-picker": "^4.8.5",
     "react-native-maps": "^1.18.0",
     "react-native-maps-directions": "^1.9.0",
-    "react-native-toast-message": "^2.2.0"
+    "react-native-toast-message": "^2.2.0",
+    "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -32,6 +32,7 @@
     "@react-native/metro-config": "0.75.3",
     "@react-native/typescript-config": "0.75.3",
     "@types/react": "^18.2.6",
+    "@types/react-native-vector-icons": "^6.4.18",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
     "eslint": "^8.19.0",
