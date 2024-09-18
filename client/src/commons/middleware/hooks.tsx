@@ -21,8 +21,6 @@ const useStoreData = <T extends BusinessObject>(
   store: DataStore<T>,
   fetchAll: boolean,
 ): T[] | null => {
-  const [data, setData] = useState<T[] | null>(null);
-  const dataDeferred = useDeferredValue(data);
   const storeDataDeferred = useDeferredValue(
     store.isSync() ? [...store.data!] : null,
   );
@@ -30,7 +28,6 @@ const useStoreData = <T extends BusinessObject>(
   return useSyncExternalStore<T[] | null>(
     onStoreChange => {
       const suscriber = (data: Set<T>) => {
-        setData([...data]);
         onStoreChange();
       };
 
@@ -54,7 +51,7 @@ const useStoreData = <T extends BusinessObject>(
 
       return () => store.unsubscribe(suscriber);
     },
-    () => dataDeferred,
+    () => storeDataDeferred,
     () => storeDataDeferred,
   );
 };

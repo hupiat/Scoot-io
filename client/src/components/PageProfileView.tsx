@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   input: {
     left: 25,
-    marginVertical: 10,
+    marginVertical: 5,
   },
   avatar: {
     width: 200,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   button: {
-    marginTop: 30,
+    marginTop: 40,
     marginHorizontal: 15,
   },
 });

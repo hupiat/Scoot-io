@@ -1,5 +1,5 @@
 import {Icon, Modal, View} from '@ant-design/react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useDeferredValue, useEffect, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker, Region} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
@@ -10,35 +10,37 @@ import {GeoCode} from '../commons/types';
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {useStoreDataRides} from '../commons/middleware/hooks';
+import {displayErrorToast} from '../commons/tools';
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
-  const [region, setRegion] = useState<Region>();
   const {destination, setDestination} = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
 
+  const deferredPosition = useDeferredValue(position);
+
   useEffect(() => {
-    const watchId = Geolocation.watchPosition(location =>
-      setPosition({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      }),
+    const watchId = Geolocation.watchPosition(
+      location =>
+        setPosition({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        }),
+      () =>
+        displayErrorToast({
+          name: 'Error',
+          message: 'Could not get location',
+        }),
+      {
+        interval: 2000,
+        enableHighAccuracy: true,
+        accuracy: {
+          android: 'high',
+        },
+      },
     );
     return () => Geolocation.clearWatch(watchId);
-  }, [setPosition]);
-
-  useEffect(() => {
-    if (position) {
-      setRegion({
-        latitude: position.latitude,
-        longitude: position.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
-    }
-  }, [position]);
-
-  console.log(region);
+  }, []);
 
   return (
     <>
@@ -53,23 +55,31 @@ export default function PageRoadlineView() {
           showsIndoors
           showsPointsOfInterest
           showsMyLocationButton
-          onRegionChangeComplete={setRegion}
-          initialRegion={region}>
-          {position && (
+          region={
+            position
+              ? {
+                  latitude: position.latitude,
+                  longitude: position.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }
+              : undefined
+          }>
+          {deferredPosition && (
             <Marker
               coordinate={{
-                latitude: position.latitude,
-                longitude: position.longitude,
+                latitude: deferredPosition.latitude,
+                longitude: deferredPosition.longitude,
               }}
               image={require('../assets/marker.png')}
               style={{width: 50, height: 50}}
             />
           )}
-          {position && destination && (
+          {deferredPosition && destination && (
             <MapViewDirections
               apikey={GOOGLE_WEB_API_KEY}
               mode="BICYCLING"
-              origin={position}
+              origin={deferredPosition}
               destination={destination || undefined}
               strokeWidth={5}
             />
@@ -147,12 +157,12 @@ const styles = StyleSheet.create({
   searchContainer: {
     position: 'absolute',
     width: '100%',
-    top: 30,
+    top: 0,
   },
   mapStyle: {
     flex: 1,
     position: 'absolute',
-    top: 55,
+    top: 40,
     left: 0,
     right: 0,
     bottom: 0,
