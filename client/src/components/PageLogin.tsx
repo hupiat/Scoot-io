@@ -1,12 +1,6 @@
 import {Button, Input} from '@ant-design/react-native';
 import React, {useState} from 'react';
-import {
-  Image,
-  PermissionsAndroid,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import logo from '../assets/logo.png';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account} from '../commons/types';
@@ -25,12 +19,6 @@ export default function PageLogin() {
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
   const {setUser, storeDataAccounts} = useMiddlewareContext();
-
-  PermissionsAndroid.request('android.permission.ACCESS_COARSE_LOCATION');
-  PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION');
-  PermissionsAndroid.request('android.permission.READ_EXTERNAL_STORAGE');
-  PermissionsAndroid.request('android.permission.WRITE_EXTERNAL_STORAGE');
-  PermissionsAndroid.request('android.permission.CAMERA');
 
   const validateSchema = (): boolean => {
     if (isSuscribing) {
