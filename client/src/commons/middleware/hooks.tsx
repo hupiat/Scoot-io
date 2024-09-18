@@ -68,7 +68,7 @@ const useStoreDataCreate = <T extends BusinessObject>(
     Toast.show({
       type: 'success',
       text1: op.toLocaleUpperCase(),
-      text2: 'Object has been updated in database',
+      text2: 'Data has been updated in database',
     });
   }
 

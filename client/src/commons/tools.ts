@@ -1,4 +1,5 @@
 import Toast from 'react-native-toast-message';
+import {GeoCode} from './types';
 
 export const displayErrorToast = (e: Error): void => {
   Toast.show({
@@ -23,5 +24,17 @@ export const validatePassword = (pw: string): boolean => {
     /[0-9]/.test(pw) &&
     /[^A-Za-z0-9]/.test(pw) &&
     pw.length > 8
+  );
+};
+
+const EPSILON = 1e-4;
+
+export const areCoordinatesEqual = (
+  geometry: GeoCode,
+  geometry2: GeoCode,
+): boolean => {
+  return (
+    Math.abs(geometry.latitude - geometry2.latitude) < EPSILON &&
+    Math.abs(geometry.longitude - geometry2.longitude) < EPSILON
   );
 };

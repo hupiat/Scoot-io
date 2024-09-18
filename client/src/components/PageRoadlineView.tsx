@@ -4,14 +4,18 @@ import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker, MapPolyline} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import SearchInputLocations from './SearchInputLocations';
-import {Marker as MarkerBusinessObject, Place} from '../commons/types';
+import {
+  Marker as MarkerBusinessObject,
+  MarkerType,
+  Place,
+} from '../commons/types';
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {
   useStoreDataMarkers,
   useStoreDataRides,
 } from '../commons/middleware/hooks';
-import {displayErrorToast} from '../commons/tools';
+import {areCoordinatesEqual, displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchGeocodeRouting} from '../commons/middleware/tools';
 
@@ -82,6 +86,49 @@ export default function PageRoadlineView() {
     marker => marker.type === 'dense_traffic',
   );
 
+  const handleDeleteMarker = (marker: MarkerBusinessObject) => {
+    Modal.alert('Confirmation', 'Delete this marker ?', [
+      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+      {
+        text: 'OK',
+        onPress: () => {
+          storeDataMarkers
+            .delete(marker.id)
+            .then(() =>
+              setMarkersData(markersData?.filter(m => m.id !== marker.id)),
+            );
+        },
+      },
+    ]);
+  };
+
+  const handleAddMarker = (type: MarkerType) => {
+    if (
+      markersData?.some(markerData =>
+        areCoordinatesEqual(markerData.geometry, position!),
+      )
+    ) {
+      displayErrorToast({
+        name: 'Error',
+        message: 'Already declared',
+      });
+      return;
+    }
+    const obj = {
+      type: type,
+      geometry: position!,
+    };
+    storeDataMarkers
+      .add(obj as any)
+      .then(() => setMarkersData([...markersData!, obj as any]))
+      .catch(() =>
+        displayErrorToast({
+          name: 'Error',
+          message: 'Already declared',
+        }),
+      );
+  };
+
   return (
     <>
       <View style={styles.mapContainer}>
@@ -128,6 +175,7 @@ export default function PageRoadlineView() {
                 }}
                 image={require('../assets/marker_plothole.png')}
                 style={{width: 50, height: 50}}
+                onSelect={() => handleDeleteMarker(marker)}
               />
             ))}
           {denseTrafficMarkers &&
@@ -140,6 +188,7 @@ export default function PageRoadlineView() {
                 }}
                 image={require('../assets/marker_dense_traffic.png')}
                 style={{width: 50, height: 50}}
+                onSelect={() => handleDeleteMarker(marker)}
               />
             ))}
         </MapView>
@@ -211,39 +260,10 @@ export default function PageRoadlineView() {
                   ]);
                   break;
                 case 'ride_plothole':
-                  const objPlothole = {
-                    type: 'plothole',
-                    geometry: position!,
-                  };
-                  storeDataMarkers
-                    .add(objPlothole as any)
-                    .then(() =>
-                      setMarkersData([...markersData!, objPlothole as any]),
-                    )
-                    .catch(() =>
-                      displayErrorToast({
-                        name: 'Error',
-                        message: 'Already declared',
-                      }),
-                    );
+                  handleAddMarker('plothole');
                   break;
                 case 'ride_dense_traffic':
-                  const objDenseTraffic = {
-                    type: 'dense_traffic',
-                    geometry: position!,
-                  };
-                  storeDataMarkers
-                    .add(objDenseTraffic as any)
-                    .then(() =>
-                      setMarkersData([...markersData!, objDenseTraffic as any]),
-                    )
-                    .catch(e => {
-                      console.error(e);
-                      displayErrorToast({
-                        name: 'Error',
-                        message: 'Already declared',
-                      });
-                    });
+                  handleAddMarker('dense_traffic');
                   break;
               }
             }}
