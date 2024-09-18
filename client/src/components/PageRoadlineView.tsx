@@ -1,21 +1,23 @@
 import {Modal, View} from '@ant-design/react-native';
 import React, {useDeferredValue, useEffect, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, MapPolyline} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
-import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
-import {GeoCode} from '../commons/types';
+import {GeoCode, Place} from '../commons/types';
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {useStoreDataRides} from '../commons/middleware/hooks';
 import {displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import DataStore from '../commons/middleware/DataStore';
+import {API_OSRM} from '../commons/middleware/paths';
 
 export default function PageRoadlineView() {
   const [position, setPosition] = useState<GeoCode>();
   const {destination, setDestination} = useRideContext();
+  const [ride, setRide] = useState<GeoCode[] | null>(null);
   const [, storeDataRides] = useStoreDataRides();
 
   const deferredPosition = useDeferredValue(position);
@@ -42,6 +44,45 @@ export default function PageRoadlineView() {
     );
     return () => Geolocation.clearWatch(watchId);
   }, []);
+
+  const handlePlaceSelect = (place: Place) => {
+    setDestination({
+      latitude: place.geometry.latitude,
+      longitude: place.geometry.longitude,
+    });
+    DataStore.doFetch(
+      API_OSRM +
+        position!.longitude +
+        ',' +
+        position!.latitude +
+        ';' +
+        place.geometry.longitude +
+        ',' +
+        place.geometry.latitude +
+        '?steps=true',
+      url => fetch(url),
+    )
+      .then(res => res?.json())
+      .then(jsons => {
+        let coords: GeoCode[] = [];
+        for (const route of jsons.routes) {
+          for (const leg of route.legs) {
+            for (const step of leg.steps) {
+              coords = [
+                ...coords,
+                ...step.intersections.map((json: any) => ({
+                  longitude: json.location[0],
+                  latitude: json.location[1],
+                })),
+              ];
+            }
+          }
+        }
+        setRide(coords);
+      });
+  };
+
+  console.log(ride);
 
   return (
     <>
@@ -76,26 +117,15 @@ export default function PageRoadlineView() {
               style={{width: 50, height: 50}}
             />
           )}
-          {deferredPosition && destination && (
-            <MapViewDirections
-              apikey={GOOGLE_WEB_API_KEY}
-              mode="BICYCLING"
-              origin={deferredPosition}
-              destination={destination || undefined}
-              strokeWidth={5}
-            />
+          {deferredPosition && destination && ride && (
+            <MapPolyline strokeWidth={5} coordinates={ride} />
           )}
         </MapView>
       </View>
       <View style={styles.searchContainer}>
         <SearchInputLocations
           hideResults={!!destination}
-          onSelectPlace={place =>
-            setDestination({
-              latitude: place.geometry.latitude,
-              longitude: place.geometry.longitude,
-            })
-          }
+          onSelectPlace={handlePlaceSelect}
         />
       </View>
       {!!destination && (

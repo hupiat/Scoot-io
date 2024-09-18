@@ -7,5 +7,4 @@ export const API_RIDES = 'rides';
 export const API_PROXY = 'https://thingproxy.freeboard.io/fetch/';
 export const API_NOMINATIM = ' https://nominatim.openstreetmap.org/search?';
 
-export const API_GOOGLE_PLACES_FIND =
-  'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?';
+export const API_OSRM = 'http://router.project-osrm.org/route/v1/bike/';
