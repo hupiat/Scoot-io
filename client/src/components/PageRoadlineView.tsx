@@ -3,7 +3,6 @@ import React, {useDeferredValue, useEffect, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker, MapPolyline} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import MapViewDirections from 'react-native-maps-directions';
 import SearchInputLocations from './SearchInputLocations';
 import {GeoCode, Place} from '../commons/types';
 import {useRideContext} from '../commons/rides/context';
@@ -11,13 +10,19 @@ import {FloatingAction} from 'react-native-floating-action';
 import {useStoreDataRides} from '../commons/middleware/hooks';
 import {displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import DataStore from '../commons/middleware/DataStore';
-import {API_OSRM} from '../commons/middleware/paths';
+import {fetchGeocodeRouting} from '../commons/middleware/tools';
 
 export default function PageRoadlineView() {
-  const [position, setPosition] = useState<GeoCode>();
-  const {destination, setDestination} = useRideContext();
-  const [ride, setRide] = useState<GeoCode[] | null>(null);
+  const {
+    position,
+    setPosition,
+    destination,
+    setDestination,
+    rideGeometry,
+    setRideGeometry,
+    destinationName,
+    setDestinationName,
+  } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
 
   const deferredPosition = useDeferredValue(position);
@@ -45,52 +50,19 @@ export default function PageRoadlineView() {
     return () => Geolocation.clearWatch(watchId);
   }, []);
 
-  const handlePlaceSelect = (place: Place) => {
-    console.log(
-      API_OSRM +
-        position!.longitude +
-        ',' +
-        position!.latitude +
-        ';' +
-        place.geometry.longitude +
-        ',' +
-        place.geometry.latitude +
-        '?steps=true&geometries=polyline',
+  const handlePlaceSelect = async (place: Place) => {
+    const coords = await fetchGeocodeRouting(
+      position!.longitude,
+      position!.latitude,
+      place.geometry.longitude,
+      place.geometry.latitude,
     );
+    setDestinationName(place.name);
     setDestination({
       latitude: place.geometry.latitude,
       longitude: place.geometry.longitude,
     });
-    DataStore.doFetch(
-      API_OSRM +
-        position!.longitude +
-        ',' +
-        position!.latitude +
-        ';' +
-        place.geometry.longitude +
-        ',' +
-        place.geometry.latitude +
-        '?steps=true&geometries=polyline',
-      url => fetch(url),
-    )
-      .then(res => res?.json())
-      .then(jsons => {
-        let coords: GeoCode[] = [];
-        for (const route of jsons.routes) {
-          for (const leg of route.legs) {
-            for (const step of leg.steps) {
-              coords = [
-                ...coords,
-                ...step.intersections.map((json: any) => ({
-                  longitude: json.location[0],
-                  latitude: json.location[1],
-                })),
-              ];
-            }
-          }
-        }
-        setRide(coords);
-      });
+    setRideGeometry(coords);
   };
 
   return (
@@ -126,8 +98,8 @@ export default function PageRoadlineView() {
               style={{width: 50, height: 50}}
             />
           )}
-          {deferredPosition && destination && ride && (
-            <MapPolyline strokeWidth={5} coordinates={ride} />
+          {deferredPosition && destination && rideGeometry && (
+            <MapPolyline strokeWidth={5} coordinates={rideGeometry} />
           )}
         </MapView>
       </View>
@@ -167,20 +139,33 @@ export default function PageRoadlineView() {
                 case 'ride_cancel':
                   Modal.alert('Confirmation', 'Cancel the current ride ?', [
                     {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-                    {text: 'OK', onPress: () => setDestination(null)},
+                    {
+                      text: 'OK',
+                      onPress: () => {
+                        setDestination(null);
+                        setDestinationName(null);
+                        setRideGeometry(null);
+                      },
+                    },
                   ]);
                   break;
                 case 'ride_save':
-                  Modal.prompt('Confirmation', 'Save the current ride ?', [
+                  Modal.alert('Confirmation', 'Save the current ride ?', [
                     {text: 'Cancel', onPress: () => {}, style: 'cancel'},
                     {
                       text: 'OK',
-                      // Typing error in antd
                       onPress: () =>
-                        storeDataRides.add({
-                          name: '',
-                          destination: destination,
-                        }),
+                        storeDataRides
+                          .add({
+                            name: destinationName!,
+                            destination: destination,
+                          })
+                          .catch(() =>
+                            displayErrorToast({
+                              name: 'Error',
+                              message: 'This ride is already in base',
+                            }),
+                          ),
                     },
                   ]);
                   break;

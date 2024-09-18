@@ -1,4 +1,4 @@
-import {Button, Card, Flex, Icon, Input} from '@ant-design/react-native';
+import {Button, Card, Flex, Input} from '@ant-design/react-native';
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useMiddlewareContext} from '../commons/middleware/context';
@@ -10,6 +10,7 @@ import {
 } from '../commons/tools';
 import Toast from 'react-native-toast-message';
 import {launchImageLibrary} from 'react-native-image-picker';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const baseTypingUser = (user: Account): WithoutId<Account> => ({
   email: user.email,
@@ -85,7 +86,7 @@ export default function PageProfileView() {
       <TouchableOpacity onPress={pickImage}>
         <Card style={styles.avatar}>
           {!typingUser.picture ? (
-            <Icon name="user" style={styles.avatarIcon} />
+            <Icon name="user-o" style={styles.avatarIcon} />
           ) : (
             <Image
               source={{
@@ -169,6 +170,9 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   avatar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
     width: 200,
     height: 200,
     marginBottom: 50,

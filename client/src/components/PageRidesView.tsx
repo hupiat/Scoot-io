@@ -1,16 +1,24 @@
 import {List, Modal, View} from '@ant-design/react-native';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import {useStoreDataRides} from '../commons/middleware/hooks';
 import {Ride} from '../commons/types';
 import dayjs from 'dayjs';
 import {useRideContext} from '../commons/rides/context';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {fetchGeocodeRouting} from '../commons/middleware/tools';
 
 export default function PageRidesView() {
   const [data, setData] = useState<Ride[]>([]);
   const [, storeDataRides] = useStoreDataRides();
-  const {setDestination} = useRideContext();
+  const {setDestination, position, setDestinationName, setRideGeometry} =
+    useRideContext();
 
   useEffect(() => {
     storeDataRides
@@ -19,53 +27,63 @@ export default function PageRidesView() {
   }, []);
 
   return (
-    <View>
+    <ScrollView style={styles.scrollView}>
       <Text style={styles.title}>Rides Management</Text>
-      <ScrollView
-        style={styles.scrollView}
-        automaticallyAdjustContentInsets={false}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}>
-        {data.length ? (
-          <List>
-            {data?.map(ride => (
-              <TouchableOpacity
-                key={ride.id}
-                onPress={() => {
-                  Modal.alert('Confirmation', 'Start this ride ?', [
-                    {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-                    {
-                      text: 'OK',
-                      onPress: () => setDestination(ride.destination),
+      {data.length ? (
+        <List>
+          {data?.map(ride => (
+            <TouchableOpacity
+              key={ride.id}
+              onPress={() => {
+                Modal.alert('Confirmation', 'Start this ride ?', [
+                  {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                  {
+                    text: 'OK',
+                    onPress: async () => {
+                      const coords = await fetchGeocodeRouting(
+                        position!.longitude,
+                        position!.latitude,
+                        ride.destination.longitude,
+                        ride.destination.latitude,
+                      );
+                      setRideGeometry(coords);
+                      setDestination(ride.destination);
+                      setDestinationName(ride.name);
                     },
-                  ]);
-                }}>
-                <List.Item>
-                  {ride.name} {dayjs(ride.dateCreation).format('DD/MM/YYYY')}{' '}
-                  <TouchableOpacity
-                    onPress={() => {
-                      Modal.alert('Confirmation', 'Delete this ride ?', [
-                        {text: 'Cancel', onPress: () => {}, style: 'cancel'},
-                        {
-                          text: 'OK',
-                          onPress: () => storeDataRides.delete(ride.id),
+                  },
+                ]);
+              }}>
+              <List.Item>
+                <View>
+                  {ride.name} ({dayjs(ride.dateCreation).format('DD/MM/YYYY')})
+                </View>
+                <TouchableOpacity
+                  style={styles.deleteIcon}
+                  onPress={() => {
+                    Modal.alert('Confirmation', 'Delete this ride ?', [
+                      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          storeDataRides.delete(ride.id);
+                          setData(data => data.filter(d => d.id !== ride.id));
                         },
-                      ]);
-                    }}>
-                    <Icon name="delete" />
-                  </TouchableOpacity>
-                </List.Item>
-              </TouchableOpacity>
-            ))}
-          </List>
-        ) : (
-          <>
-            <Text style={styles.emptyMessage}>No data have been found :-(</Text>
-            <Text style={styles.emptyMessage}>Start riding !</Text>
-          </>
-        )}
-      </ScrollView>
-    </View>
+                      },
+                    ]);
+                  }}>
+                  <Icon name="trash-o" size={30} />
+                </TouchableOpacity>
+              </List.Item>
+            </TouchableOpacity>
+          ))}
+        </List>
+      ) : (
+        <>
+          <Text style={styles.emptyMessage}>No data have been found :-(</Text>
+          <Text style={styles.emptyMessage}>Start riding !</Text>
+        </>
+      )}
+    </ScrollView>
   );
 }
 
@@ -74,6 +92,8 @@ const styles = StyleSheet.create({
     fontSize: 50,
     marginTop: 35,
     marginLeft: 10,
+    marginBottom: 25,
+    color: 'black',
   },
   emptyMessage: {
     fontSize: 25,
@@ -83,5 +103,10 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     marginTop: 20,
+    width: Dimensions.get('window').width,
+    height: 200,
+  },
+  deleteIcon: {
+    alignSelf: 'flex-end',
   },
 });
