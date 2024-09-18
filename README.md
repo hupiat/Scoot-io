@@ -5,7 +5,7 @@ Your companion for electrical scooter
 ### TODO
 
 - [x] Secure traffic algorithm
-- [ ] Scalable server
-- [ ] Roadlines management
+- [x] Scalable server
+- [x] Roadlines management
 - [x] Roadline view workflow
 - [x] Users authentication
