@@ -2,11 +2,7 @@ import React, {useDeferredValue, useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AutocompleteInput from 'react-native-autocomplete-input';
 import DataStore from '../commons/middleware/DataStore';
-import {
-  API_GOOGLE_PLACES,
-  API_GOOGLE_PLACES_FIND,
-} from '../commons/middleware/paths';
-import {GOOGLE_WEB_API_KEY} from '../commons/_local_constants';
+import {API_NOMINATIM, API_PROXY} from '../commons/middleware/paths';
 import {Place} from '../commons/types';
 
 interface IProps {
@@ -26,40 +22,27 @@ export default function SearchInputLocations({
 
   useEffect(() => {
     DataStore.doFetch(
-      API_GOOGLE_PLACES +
-        'input=' +
-        deferredQuery +
-        '&key=' +
-        GOOGLE_WEB_API_KEY,
-      async url => await fetch(url),
+      API_PROXY + API_NOMINATIM + 'format=json&q=' + deferredQuery,
+      async url =>
+        await fetch(url, {
+          headers: {
+            'User-Agent': 'Scootio/1.0 (hugopiatlillo@gmail.com)',
+          },
+        }),
     )
       .then(res => res?.json())
-      .then(json => setData(json.predictions));
+      .then(json => setData(json));
   }, [deferredQuery]);
 
   const handleSelect = (item: any) => {
-    DataStore.doFetch(
-      API_GOOGLE_PLACES_FIND +
-        'input=' +
-        item.description +
-        '&fields=formatted_address,name,geometry&inputtype=textquery&key=' +
-        GOOGLE_WEB_API_KEY,
-      async url => await fetch(url),
-    )
-      .then(res => res?.json())
-      .then(json => {
-        // should always be present
-        const jsonPlace = json.candidates[0];
-        setSelectedPlace({
-          name: jsonPlace.name,
-          geometry: {
-            latitude: jsonPlace.geometry.location.lat,
-            longitude: jsonPlace.geometry.location.lng,
-          },
-          address: jsonPlace.formatted_address,
-        });
-        setQuery(jsonPlace.formatted_address);
-      });
+    setSelectedPlace({
+      name: item.name,
+      address: item.display_name,
+      geometry: {
+        latitude: item.lat,
+        longitude: item.lon,
+      },
+    });
   };
 
   useEffect(() => {
@@ -78,12 +61,12 @@ export default function SearchInputLocations({
         inputContainerStyle={styles.autocompleteContainer}
         onChangeText={setQuery}
         flatListProps={{
-          keyExtractor: (_, i: number) => String(i),
+          keyExtractor: item => item.place_id,
           renderItem: ({item}: {item: any}) => (
             <TouchableOpacity
               onPress={() => handleSelect(item)}
               style={styles.autoCompleteItem}>
-              <Text>{item.description}</Text>
+              <Text>{item.display_name}</Text>
             </TouchableOpacity>
           ),
         }}
