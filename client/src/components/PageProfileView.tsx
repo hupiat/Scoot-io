@@ -58,7 +58,7 @@ export default function PageProfileView() {
         Toast.show({
           type: 'success',
           text1: 'UPDATE',
-          text2: 'Your profile have been updated',
+          text2: 'Your profile has been updated !',
         });
         setTypingUser(baseTypingUser(user!));
         setPasswordConfirm('');

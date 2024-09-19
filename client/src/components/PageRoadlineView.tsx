@@ -93,11 +93,14 @@ export default function PageRoadlineView() {
       {
         text: 'OK',
         onPress: () => {
-          storeDataMarkers
-            .delete(marker.id)
-            .then(() =>
-              setMarkersData(markersData?.filter(m => m.id !== marker.id)),
-            );
+          storeDataMarkers.delete(marker.id).then(() => {
+            setMarkersData(markersData?.filter(m => m.id !== marker.id));
+            Toast.show({
+              type: 'success',
+              text1: 'DELETE',
+              text2: 'Marker has been deleted !',
+            });
+          });
         },
       },
     ]);
@@ -121,7 +124,14 @@ export default function PageRoadlineView() {
     };
     storeDataMarkers
       .add(obj as any)
-      .then(() => setMarkersData([...markersData!, obj as any]))
+      .then(() => {
+        setMarkersData([...markersData!, obj as any]);
+        Toast.show({
+          type: 'success',
+          text1: 'ADD',
+          text2: 'Marker has been added !',
+        });
+      })
       .catch(() =>
         displayErrorToast({
           name: 'Error',
@@ -265,6 +275,13 @@ export default function PageRoadlineView() {
                           .add({
                             name: destinationName!,
                             destination: destination,
+                          })
+                          .then(() => {
+                            Toast.show({
+                              type: 'success',
+                              text1: 'ADD',
+                              text2: 'Ride has been saved !',
+                            });
                           })
                           .catch(() =>
                             displayErrorToast({

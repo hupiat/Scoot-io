@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import {useRideContext} from '../commons/rides/context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchGeocodeRouting} from '../commons/middleware/tools';
+import Toast from 'react-native-toast-message';
 
 export default function PageRidesView() {
   const [data, setData] = useState<Ride[]>([]);
@@ -65,7 +66,13 @@ export default function PageRidesView() {
                       {
                         text: 'OK',
                         onPress: () => {
-                          storeDataRides.delete(ride.id);
+                          storeDataRides.delete(ride.id).then(() =>
+                            Toast.show({
+                              type: 'success',
+                              text1: 'DELETE',
+                              text2: 'Ride has been deleted !',
+                            }),
+                          );
                           setData(data => data.filter(d => d.id !== ride.id));
                         },
                       },
