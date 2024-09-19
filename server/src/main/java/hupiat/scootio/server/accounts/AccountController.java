@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hupiat.scootio.server.core.controllers.ICommonController;
+import hupiat.scootio.server.core.mailing.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -72,12 +73,25 @@ public class AccountController implements ICommonController<AccountEntity> {
 	public void delete(@PathVariable long id) {
 		repository.deleteById(id);
 	}
+	
+	@PostMapping("retrieve_password/{mail}")
+	void sendNewPassword(@PathVariable String mail) {
+		AccountEntity account = repository.findByEmail(mail).orElseThrow();
+		String newPassword = AccountService.generateNewPasswordForRetrieving(AccountService.NEW_PASSWORD_RETRIEVAL_LENGTH);
+		account.setPassword(newPassword);
+		account = service.update(account);
+		try {
+			EmailSender.sendNewPasswordRetrieving(mail, newPassword);
+		} catch (MessagingException e) {
+			throw new InternalError(e);
+		}
+	}
 
 	@PostMapping("login")
 	AccountEntity login(@RequestBody AccountLoginDTO token, HttpServletRequest req) {
 		AccountEntity account = repository.findByEmail(token.email()).orElseThrow();
 		Authentication auth = accountAuthProvider
-				.authenticate(new UsernamePasswordAuthenticationToken(account.getUsername(), token.password(), new ArrayList<>()));
+				.authenticate(new UsernamePasswordAuthenticationToken(account.getEmail(), token.password(), new ArrayList<>()));
 		SecurityContext sc = SecurityContextHolder.getContext();
 		sc.setAuthentication(auth);
 		HttpSession session = req.getSession(true);
@@ -90,7 +104,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	AccountEntity logout(HttpSession session) {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication token = context.getAuthentication();
-		AccountEntity account = repository.findByUsername(token.getName()).orElseThrow();
+		AccountEntity account = repository.findByEmail(token.getName()).orElseThrow();
 		session.removeAttribute(SPRING_SECURITY_CONTEXT_KEY);
 		account.setPassword(null);
 		return account;

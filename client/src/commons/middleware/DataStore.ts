@@ -61,7 +61,12 @@ export default class DataStore<T extends BusinessObject> {
     shouldLog: boolean = true,
   ): Promise<Response | undefined> {
     try {
-      return await callback(url);
+      const res = await callback(url);
+      console.log(res);
+      if (!res.ok) {
+        throw Error('Server error');
+      }
+      return res;
     } catch (e) {
       if (shouldLog) {
         this.logError(e as Error);

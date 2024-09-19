@@ -1,5 +1,7 @@
 package hupiat.scootio.server.accounts;
 
+import java.security.SecureRandom;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
@@ -36,7 +38,7 @@ public class AccountService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return repository.findByUsername(username).orElseThrow();
+		return repository.findByEmail(username).orElseThrow();
 	}
 
 	public AccountEntity insert(String username, String email, String password) throws AddressException, MessagingException {
@@ -57,4 +59,30 @@ public class AccountService implements UserDetailsService {
 		return repository.save(newEntity);
 	}
 
+	public static final int NEW_PASSWORD_RETRIEVAL_LENGTH = 10;
+	public static final String generateNewPasswordForRetrieving(int length) {
+        if (length < 1) {
+        	throw new IllegalArgumentException("length should be 1 or more");
+        }
+        final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+        final String DIGITS = "0123456789";
+        final String SPECIAL = "!@#$%&*()-_=+<>?";
+        final String ALL_CHARACTERS = UPPER + LOWER + DIGITS + SPECIAL;
+        
+        SecureRandom rand = new SecureRandom();
+
+        StringBuilder password = new StringBuilder(length);
+
+        password.append(UPPER.charAt(rand.nextInt(UPPER.length())));
+        password.append(LOWER.charAt(rand.nextInt(LOWER.length())));
+        password.append(DIGITS.charAt(rand.nextInt(DIGITS.length())));
+        password.append(SPECIAL.charAt(rand.nextInt(SPECIAL.length())));
+
+        for (int i = 4; i < length; i++) {
+            password.append(ALL_CHARACTERS.charAt(rand.nextInt(ALL_CHARACTERS.length())));
+        }
+
+        return password.toString();
+	}
 }

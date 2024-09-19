@@ -80,7 +80,12 @@ const MiddlewareContext = ({children}: IProps) => {
             }
           })
           .then(json => setUserState(json))
-          .catch(displayErrorToast);
+          .catch(() =>
+            displayErrorToast({
+              name: 'Error',
+              message: 'Bad credentials',
+            }),
+          );
       });
     }
     return pendingUserTransition;

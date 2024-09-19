@@ -12,6 +12,12 @@ import {
 } from '../commons/tools';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import DataStore from '../commons/middleware/DataStore';
+import {
+  API_ACCOUNTS,
+  API_PREFIX,
+  URL_BACKEND,
+} from '../commons/middleware/paths';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
@@ -62,6 +68,33 @@ export default function PageLogin() {
     }
   };
 
+  const validateSchemaRetrievePassword = (): boolean => {
+    return validateEmail(mail);
+  };
+
+  const handlePressRetrievePassword = (): void => {
+    DataStore.doFetch(
+      `${URL_BACKEND}/${API_PREFIX}/${API_ACCOUNTS}/retrieve_password/` + mail,
+      url =>
+        fetch(url, {
+          method: 'POST',
+        }),
+    )
+      .then(() =>
+        Toast.show({
+          type: 'success',
+          text1: 'UPDATE',
+          text2: 'A new password has been sent to your e-mail !',
+        }),
+      )
+      .catch(() =>
+        displayErrorToast({
+          name: 'Error',
+          message: 'This account could not be found',
+        }),
+      );
+  };
+
   return (
     <SafeAreaView style={styles.rootView}>
       <View style={styles.view}>
@@ -94,6 +127,14 @@ export default function PageLogin() {
           onPress={handlePress}>
           {isSuscribing ? 'Suscribe' : 'Login'}
         </Button>
+        {!isSuscribing && (
+          <Button
+            type="primary"
+            onPress={handlePressRetrievePassword}
+            disabled={!validateSchemaRetrievePassword()}>
+            Retrieve password
+          </Button>
+        )}
       </View>
       <Image source={logo} style={styles.logo} />
       <FloatingAction

@@ -24,11 +24,11 @@ public class AccountAuthProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		String username = authentication.getPrincipal().toString();
+		String mail = authentication.getPrincipal().toString();
 
 		UserDetails user;
 		try {
-			user = userDetailsService.loadUserByUsername(username);
+			user = userDetailsService.loadUserByUsername(mail);
 		} catch (Exception e) {
 			throw new AuthenticationServiceException(EXCEPTION, e);
 		}
