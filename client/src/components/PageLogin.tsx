@@ -45,7 +45,7 @@ export default function PageLogin() {
           Toast.show({
             type: 'success',
             text1: 'Suscribe',
-            text2: 'You have been suscribed !',
+            text2: 'You have been suscribed ! An e-mail has been sent :-)',
           }),
         )
         .catch(() =>
@@ -66,7 +66,7 @@ export default function PageLogin() {
     <SafeAreaView style={styles.rootView}>
       <View style={styles.view}>
         <Input
-          placeholder="E-mail"
+          placeholder="Email"
           type="email-address"
           prefix={<Icon name="user-secret" size={20} />}
           value={mail}

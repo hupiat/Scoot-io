@@ -99,16 +99,10 @@ export default function PageProfileView() {
       </TouchableOpacity>
       <Text>Email</Text>
       <Input
-        placeholder="Email"
+        disabled
+        placeholder={typingUser.email}
         type="email-address"
-        value={typingUser.email}
         style={styles.input}
-        onChangeText={email =>
-          setTypingUser({
-            ...typingUser,
-            email: email,
-          })
-        }
       />
       <Text>Username</Text>
       <Input

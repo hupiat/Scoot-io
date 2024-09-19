@@ -3,6 +3,8 @@ package hupiat.scootio.server.accounts;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 import org.apache.tomcat.websocket.AuthenticationException;
@@ -52,7 +54,13 @@ public class AccountController implements ICommonController<AccountEntity> {
 
 	@Override
 	public AccountEntity add(@RequestBody AccountEntity entity) {
-		return service.insert(entity.getUsername(), entity.getEmail(), entity.getPassword());
+		AccountEntity account = null;
+		try {
+			account = service.insert(entity.getUsername(), entity.getEmail(), entity.getPassword());
+		} catch (MessagingException e) {
+			throw new InternalError(e);
+		}
+		return account;
 	}
 
 	@Override

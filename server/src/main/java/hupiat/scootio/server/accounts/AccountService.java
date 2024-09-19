@@ -1,11 +1,16 @@
 package hupiat.scootio.server.accounts;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import hupiat.scootio.server.core.mailing.EmailSender;
 
 // Instantiated by SecurityConfigAdapter to avoid circular dependencies for password encoder
 // Still a bean at all
@@ -34,12 +39,14 @@ public class AccountService implements UserDetailsService {
 		return repository.findByUsername(username).orElseThrow();
 	}
 
-	public AccountEntity insert(String username, String email, String password) {
+	public AccountEntity insert(String username, String email, String password) throws AddressException, MessagingException {
 		AccountEntity entity = new AccountEntity(email, username, encoder.encode(password));
-		return repository.save(entity);
+		entity = repository.save(entity);
+		EmailSender.sendConfirmationSuscribe(email);
+		return entity;
 	}
 	
-	public AccountEntity insert(String username, String email, String password, byte[] picture) {
+	public AccountEntity insert(String username, String email, String password, byte[] picture) throws AddressException, MessagingException {
 		AccountEntity entity = insert(username, email, password);
 		entity.setPicture(picture);
 		return repository.save(entity);
