@@ -8,12 +8,14 @@ import {MAPBOX_WEB_APi_KEY} from '../commons/_local_constants';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;
-  hideResults: boolean;
+  hideResults?: boolean;
+  forceDisplay?: string;
 }
 
 export default function SearchInputLocations({
   onSelectPlace,
   hideResults,
+  forceDisplay,
 }: IProps) {
   const [query, setQuery] = useState<string>('');
   const [data, setData] = useState<[]>([]);
@@ -52,7 +54,7 @@ export default function SearchInputLocations({
     <SafeAreaView style={styles.autocompleteContainer}>
       <AutocompleteInput
         data={data}
-        value={query}
+        value={query || forceDisplay}
         hideResults={hideResults}
         containerStyle={styles.autocompleteContainer}
         inputContainerStyle={styles.autocompleteContainer}

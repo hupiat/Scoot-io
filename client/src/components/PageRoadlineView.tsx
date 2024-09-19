@@ -197,6 +197,7 @@ export default function PageRoadlineView() {
         <SearchInputLocations
           hideResults={!!destination}
           onSelectPlace={handlePlaceSelect}
+          forceDisplay={destinationName || undefined}
         />
       </View>
       {!!destination && (
