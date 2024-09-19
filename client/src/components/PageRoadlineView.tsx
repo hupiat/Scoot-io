@@ -18,6 +18,7 @@ import {
 import {areCoordinatesEqual, displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchGeocodeRouting} from '../commons/middleware/tools';
+import Toast from 'react-native-toast-message';
 
 export default function PageRoadlineView() {
   const [markersData, setMarkersData] = useState<MarkerBusinessObject[]>();
@@ -129,6 +130,24 @@ export default function PageRoadlineView() {
       );
   };
 
+  const resetRide = () => {
+    setDestination(null);
+    setDestinationName(null);
+    setRideGeometry(null);
+  };
+
+  useEffect(() => {
+    if (position && destination && areCoordinatesEqual(position, destination)) {
+      resetRide();
+      Toast.show({
+        type: 'info',
+        text1: 'Ride',
+        text2: 'You are arrived !',
+        autoHide: false,
+      });
+    }
+  }, [position]);
+
   return (
     <>
       <View style={styles.mapContainer}>
@@ -232,11 +251,7 @@ export default function PageRoadlineView() {
                     {text: 'Cancel', onPress: () => {}, style: 'cancel'},
                     {
                       text: 'OK',
-                      onPress: () => {
-                        setDestination(null);
-                        setDestinationName(null);
-                        setRideGeometry(null);
-                      },
+                      onPress: resetRide,
                     },
                   ]);
                   break;
