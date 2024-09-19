@@ -188,7 +188,6 @@ export default function PageRoadlineView() {
                 longitude: deferredPosition.longitude,
               }}
               image={require('../assets/marker.png')}
-              style={{width: 50, height: 50}}
             />
           )}
           {deferredPosition && destination && rideGeometry && (
@@ -203,7 +202,6 @@ export default function PageRoadlineView() {
                   longitude: marker.geometry.longitude,
                 }}
                 image={require('../assets/marker_plothole.png')}
-                style={{width: 50, height: 50}}
                 onSelect={() => handleDeleteMarker(marker)}
               />
             ))}
@@ -216,7 +214,6 @@ export default function PageRoadlineView() {
                   longitude: marker.geometry.longitude,
                 }}
                 image={require('../assets/marker_dense_traffic.png')}
-                style={{width: 50, height: 50}}
                 onSelect={() => handleDeleteMarker(marker)}
               />
             ))}
