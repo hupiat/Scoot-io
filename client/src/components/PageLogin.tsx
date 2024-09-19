@@ -1,4 +1,4 @@
-import {Button, Input} from '@ant-design/react-native';
+import {Button, Input, Modal} from '@ant-design/react-native';
 import React, {useState} from 'react';
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import logo from '../assets/logo.png';
@@ -54,12 +54,12 @@ export default function PageLogin() {
             text2: 'You have been suscribed ! An e-mail has been sent :-)',
           }),
         )
-        .catch(() =>
+        .catch(e => {
           displayErrorToast({
             name: 'Error',
             message: 'An account with this e-mail is already in base',
-          }),
-        );
+          });
+        });
     } else {
       setUser({
         email: mail,
@@ -73,26 +73,34 @@ export default function PageLogin() {
   };
 
   const handlePressRetrievePassword = (): void => {
-    DataStore.doFetch(
-      `${URL_BACKEND}/${API_PREFIX}/${API_ACCOUNTS}/retrieve_password/` + mail,
-      url =>
-        fetch(url, {
-          method: 'POST',
-        }),
-    )
-      .then(() =>
-        Toast.show({
-          type: 'success',
-          text1: 'UPDATE',
-          text2: 'A new password has been sent to your e-mail !',
-        }),
-      )
-      .catch(() =>
-        displayErrorToast({
-          name: 'Error',
-          message: 'This account could not be found',
-        }),
-      );
+    Modal.alert('Confirmation', 'Generate a new password for this mail ?', [
+      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+      {
+        text: 'OK',
+        onPress: () =>
+          DataStore.doFetch(
+            `${URL_BACKEND}/${API_PREFIX}/${API_ACCOUNTS}/retrieve_password/` +
+              mail,
+            url =>
+              fetch(url, {
+                method: 'POST',
+              }),
+          )
+            .then(() =>
+              Toast.show({
+                type: 'success',
+                text1: 'UPDATE',
+                text2: 'A new password has been sent to your e-mail !',
+              }),
+            )
+            .catch(() =>
+              displayErrorToast({
+                name: 'Error',
+                message: 'This account could not be found',
+              }),
+            ),
+      },
+    ]);
   };
 
   return (
