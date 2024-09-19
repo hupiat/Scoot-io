@@ -62,7 +62,6 @@ export default class DataStore<T extends BusinessObject> {
   ): Promise<Response | undefined> {
     try {
       const res = await callback(url);
-      console.log(res);
       if (!res.ok) {
         throw Error('Server error');
       }
