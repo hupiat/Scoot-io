@@ -19,7 +19,7 @@ export const fetchGeocodeRouting = async (
         destLong +
         ',' +
         destLat +
-        '?steps=true&geometries=polyline',
+        '?steps=true',
       url => fetch(url),
     )
       .then(res => res?.json())
