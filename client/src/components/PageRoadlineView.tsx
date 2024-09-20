@@ -15,9 +15,12 @@ import {
   useStoreDataMarkers,
   useStoreDataRides,
 } from '../commons/middleware/hooks';
-import {areCoordinatesEqual, displayErrorToast} from '../commons/tools';
+import {displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {fetchGeocodeRouting} from '../commons/middleware/tools';
+import {
+  areCoordinatesEqual,
+  fetchGeocodeRouting,
+} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 import Voice from '@react-native-voice/voice';
 

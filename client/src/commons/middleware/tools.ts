@@ -2,6 +2,18 @@ import {GeoCode} from '../types';
 import DataStore from './DataStore';
 import {API_OSRM} from './paths';
 
+const EPSILON = 1e-4;
+
+export const areCoordinatesEqual = (
+  geometry: GeoCode,
+  geometry2: GeoCode,
+): boolean => {
+  return (
+    Math.abs(geometry.latitude - geometry2.latitude) < EPSILON &&
+    Math.abs(geometry.longitude - geometry2.longitude) < EPSILON
+  );
+};
+
 export const fetchGeocodeRouting = async (
   positionLong: number,
   positionLat: number,

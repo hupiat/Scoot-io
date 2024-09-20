@@ -1,5 +1,5 @@
 import {Button, Input, Modal} from '@ant-design/react-native';
-import React, {useState} from 'react';
+import React, {useState, useTransition} from 'react';
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import logo from '../assets/logo.png';
 import {useMiddlewareContext} from '../commons/middleware/context';
@@ -20,6 +20,7 @@ import {
 } from '../commons/middleware/paths';
 
 export default function PageLogin() {
+  const [transitionPending, startTransition] = useTransition();
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
   const [mail, setMail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -40,32 +41,34 @@ export default function PageLogin() {
   };
 
   const handlePress = () => {
-    if (isSuscribing) {
-      storeDataAccounts
-        .add({
-          email: mail,
-          username: mail,
-          password: passwordConfirm,
-        })
-        .then(() =>
-          Toast.show({
-            type: 'success',
-            text1: 'Suscribe',
-            text2: 'You have been suscribed ! An e-mail has been sent :-)',
-          }),
-        )
-        .catch(e => {
-          displayErrorToast({
-            name: 'Error',
-            message: 'An account with this e-mail is already in base',
+    startTransition(() => {
+      if (isSuscribing) {
+        storeDataAccounts
+          .add({
+            email: mail,
+            username: mail,
+            password: passwordConfirm,
+          })
+          .then(() =>
+            Toast.show({
+              type: 'success',
+              text1: 'Suscribe',
+              text2: 'You have been suscribed ! An e-mail has been sent :-)',
+            }),
+          )
+          .catch(e => {
+            displayErrorToast({
+              name: 'Error',
+              message: 'An account with this e-mail is already in base',
+            });
           });
-        });
-    } else {
-      setUser({
-        email: mail,
-        password: password,
-      } as Account);
-    }
+      } else {
+        setUser({
+          email: mail,
+          password: password,
+        } as Account);
+      }
+    });
   };
 
   const validateSchemaRetrievePassword = (): boolean => {
@@ -131,7 +134,7 @@ export default function PageLogin() {
         )}
         <Button
           type="primary"
-          disabled={!validateSchema()}
+          disabled={!validateSchema() || transitionPending}
           onPress={handlePress}>
           {isSuscribing ? 'Suscribe' : 'Login'}
         </Button>
@@ -139,7 +142,7 @@ export default function PageLogin() {
           <Button
             type="primary"
             onPress={handlePressRetrievePassword}
-            disabled={!validateSchemaRetrievePassword()}>
+            disabled={!validateSchemaRetrievePassword() || transitionPending}>
             Retrieve password
           </Button>
         )}
