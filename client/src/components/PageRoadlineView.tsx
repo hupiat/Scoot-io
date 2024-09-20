@@ -19,8 +19,10 @@ import {areCoordinatesEqual, displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchGeocodeRouting} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
+import Voice from '@react-native-voice/voice';
 
 export default function PageRoadlineView() {
+  const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
   const [markersData, setMarkersData] = useState<MarkerBusinessObject[]>();
   const {
     position,
@@ -36,6 +38,19 @@ export default function PageRoadlineView() {
   const [, storeDataMarkers] = useStoreDataMarkers();
 
   const deferredPosition = useDeferredValue(position);
+
+  useEffect(() => {
+    Voice.onSpeechResults = (result: any) => {
+      const res = result.value as string[];
+      // Taking the better prediction
+      setDestinationName(res[res.length - 1]);
+    };
+    Voice.onSpeechEnd = () => setIsVoiceRecognizing(false);
+    Voice.onSpeechError = () => setIsVoiceRecognizing(false);
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
 
   useEffect(() => {
     storeDataMarkers
@@ -226,6 +241,36 @@ export default function PageRoadlineView() {
           forceDisplay={destinationName || undefined}
         />
       </View>
+      {!destination && (
+        <View>
+          <FloatingAction
+            overrideWithAction
+            actions={[
+              {
+                name: 'speech_recognize',
+                icon: (
+                  <Icon
+                    name={!isVoiceRecognizing ? 'microphone' : 'close'}
+                    color={'white'}
+                    size={30}
+                  />
+                ),
+              },
+            ]}
+            onPressItem={async () => {
+              if (!isVoiceRecognizing) {
+                if (await Voice.isAvailable()) {
+                  Voice.start('en-US');
+                  setIsVoiceRecognizing(true);
+                }
+              } else {
+                Voice.stop();
+                setIsVoiceRecognizing(false);
+              }
+            }}
+          />
+        </View>
+      )}
       {!!destination && (
         <View>
           <FloatingAction

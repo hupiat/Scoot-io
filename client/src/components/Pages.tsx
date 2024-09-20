@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import PageLogin from './PageLogin';
 import PagesRideContext from './PagesRideContext';
@@ -8,11 +8,26 @@ import {PermissionsAndroid} from 'react-native';
 export default function Pages() {
   const {user} = useMiddlewareContext();
 
-  PermissionsAndroid.request('android.permission.ACCESS_COARSE_LOCATION');
-  PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION');
-  PermissionsAndroid.request('android.permission.READ_EXTERNAL_STORAGE');
-  PermissionsAndroid.request('android.permission.WRITE_EXTERNAL_STORAGE');
-  PermissionsAndroid.request('android.permission.CAMERA');
+  useEffect(() => {
+    const requestPermissions = async () => {
+      await PermissionsAndroid.request(
+        'android.permission.ACCESS_COARSE_LOCATION',
+      );
+      await PermissionsAndroid.request(
+        'android.permission.ACCESS_FINE_LOCATION',
+      );
+      await PermissionsAndroid.request(
+        'android.permission.READ_EXTERNAL_STORAGE',
+      );
+      await PermissionsAndroid.request(
+        'android.permission.WRITE_EXTERNAL_STORAGE',
+      );
+      await PermissionsAndroid.request('android.permission.CAMERA');
+      await PermissionsAndroid.request('android.permission.RECORD_AUDIO');
+    };
+
+    requestPermissions();
+  }, []);
 
   return (
     <>

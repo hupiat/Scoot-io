@@ -30,7 +30,7 @@ android {
     defaultConfig {
         applicationId "com.scootio"
         minSdkVersion 23
-        targetSdkVersion 34
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -71,6 +71,7 @@ dependencies {
     implementation project(':react-native-image-picker')
     implementation project(':react-native-geolocation-service')
     implementation project(':react-native-vector-icons')
+    implementation project(':@react-native-voice_voice')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

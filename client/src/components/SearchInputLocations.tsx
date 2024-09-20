@@ -5,6 +5,7 @@ import DataStore from '../commons/middleware/DataStore';
 import {Place} from '../commons/types';
 import {API_MAPBOX} from '../commons/middleware/paths';
 import {MAPBOX_WEB_APi_KEY} from '../commons/_local_constants';
+import {useRideContext} from '../commons/rides/context';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;
@@ -20,6 +21,7 @@ export default function SearchInputLocations({
   const [query, setQuery] = useState<string>('');
   const [data, setData] = useState<[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const {setDestinationName} = useRideContext();
 
   const deferredQuery = useDeferredValue(query);
 
@@ -49,6 +51,12 @@ export default function SearchInputLocations({
       onSelectPlace(selectedPlace);
     }
   }, [selectedPlace]);
+
+  useEffect(() => {
+    if (query) {
+      setDestinationName(null);
+    }
+  }, [forceDisplay, query]);
 
   return (
     <SafeAreaView style={styles.autocompleteContainer}>
