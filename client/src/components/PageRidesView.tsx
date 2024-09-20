@@ -1,4 +1,4 @@
-import {List, Modal, View} from '@ant-design/react-native';
+import {ActivityIndicator, List, Modal, View} from '@ant-design/react-native';
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -16,7 +16,7 @@ import {fetchGeocodeRouting} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 
 export default function PageRidesView() {
-  const [data, setData] = useState<Ride[]>([]);
+  const [data, setData] = useState<Ride[] | null>(null);
   const [, storeDataRides] = useStoreDataRides();
   const {setDestination, position, setDestinationName, setRideGeometry} =
     useRideContext();
@@ -26,6 +26,18 @@ export default function PageRidesView() {
       .fetchAll()
       .then(() => setData(Array.from(storeDataRides.data!)));
   }, []);
+
+  if (!data) {
+    return (
+      <ActivityIndicator
+        size={'large'}
+        color={'blue'}
+        styles={{
+          spinner: styles.indicator,
+        }}
+      />
+    );
+  }
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -73,7 +85,7 @@ export default function PageRidesView() {
                               text2: 'Ride has been deleted !',
                             }),
                           );
-                          setData(data => data.filter(d => d.id !== ride.id));
+                          setData(data => data!.filter(d => d.id !== ride.id));
                         },
                       },
                     ]);
@@ -115,5 +127,9 @@ const styles = StyleSheet.create({
   },
   deleteIcon: {
     alignSelf: 'flex-end',
+  },
+  indicator: {
+    position: 'relative',
+    top: 325,
   },
 });
