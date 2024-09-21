@@ -25,7 +25,7 @@ public class MarkerService {
 		this.charginStationRepository = charginStationRepository;
 	}
 
-	public List<MarkerEntity> fetchAllMarkersByRadius(float longitude, float latitude) {
+	public List<MarkerEntity> fetchAllMarkersByRadius(double longitude, double latitude) {
 		List<MarkerEntity> res = new ArrayList<>();
 		List<GeocodeEntity> geometries = geocodeRepository.findGeocodesAroundPosition(longitude, latitude, LOCAL_SEARCH_RADIUS_METERS);
 		for (GeocodeEntity geocode : geometries) {
@@ -34,7 +34,7 @@ public class MarkerService {
 		return res;
 	}
 	
-	public List<ChargingStationEntity> fetchAllChargingStationsByRadius(float longitude, float latitude) {
+	public List<ChargingStationEntity> fetchAllChargingStationsByRadius(double longitude, double latitude) {
 		List<ChargingStationEntity> res = new ArrayList<>();
 		List<GeocodeEntity> geometries = geocodeRepository.findGeocodesAroundPosition(longitude, latitude, LOCAL_SEARCH_RADIUS_METERS);
 		for (GeocodeEntity geocode : geometries) {
