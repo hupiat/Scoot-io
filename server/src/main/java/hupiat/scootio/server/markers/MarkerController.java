@@ -23,7 +23,7 @@ public class MarkerController implements ICommonController<MarkerEntity> {
 		this.service = service;
 	}
 
-	@GetMapping("{longitude},{latitude}")
+	@GetMapping("{longitude}/{latitude}")
 	public List<MarkerEntity> getAllByRadius(@PathVariable float longitude, @PathVariable float latitude) {
 		return service.fetchAllMarkersByRadius(longitude, latitude);
 	}

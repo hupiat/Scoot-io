@@ -24,7 +24,7 @@ public class ChargingStationController implements ICommonController<ChargingStat
 		this.markerService = markerService;
 	}
 
-	@GetMapping("{longitude},{latitude}")
+	@GetMapping("{longitude}/{latitude}")
 	public List<ChargingStationEntity> getAllByRadius(@PathVariable float longitude, @PathVariable float latitude) {
 		return markerService.fetchAllChargingStationsByRadius(longitude, latitude);
 	}
