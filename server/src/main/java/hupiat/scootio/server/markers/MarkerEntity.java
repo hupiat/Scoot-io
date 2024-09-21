@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,7 +17,6 @@ public class MarkerEntity extends AbstractCommonEntity {
 	@Enumerated(EnumType.STRING)
 	private MarkerType type;
 	
-	@Column(nullable = false)
 	@OneToOne(cascade = CascadeType.ALL)
 	private GeocodeEntity geometry;
 	
