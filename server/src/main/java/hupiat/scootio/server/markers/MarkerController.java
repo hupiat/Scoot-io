@@ -2,6 +2,7 @@ package hupiat.scootio.server.markers;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +15,17 @@ import hupiat.scootio.server.core.controllers.ICommonController;
 public class MarkerController implements ICommonController<MarkerEntity> {
 
 	private final MarkerRepository repository;
+	private final MarkerService service;
 	
-	public MarkerController(MarkerRepository repository) {
+	public MarkerController(MarkerRepository repository, MarkerService service) {
 		super();
 		this.repository = repository;
+		this.service = service;
+	}
+
+	@GetMapping("{longitude},{latitude}")
+	public List<MarkerEntity> getAllByRadius(@PathVariable float longitude, @PathVariable float latitude) {
+		return service.fetchAllMarkersByRadius(longitude, latitude);
 	}
 
 	@Override

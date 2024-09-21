@@ -2,22 +2,31 @@ package hupiat.scootio.server.chargingStations;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hupiat.scootio.server.core.controllers.ICommonController;
+import hupiat.scootio.server.markers.MarkerService;
 
 @RequestMapping(ICommonController.API_PREFIX + "/charging_stations")
 @RestController
 public class ChargingStationController implements ICommonController<ChargingStationEntity> {
 
 	private final CharginStationRepository repository;
+	private final MarkerService markerService;
 	
-	public ChargingStationController(CharginStationRepository repository) {
+	public ChargingStationController(CharginStationRepository repository, MarkerService markerService) {
 		super();
 		this.repository = repository;
+		this.markerService = markerService;
+	}
+
+	@GetMapping("{longitude},{latitude}")
+	public List<ChargingStationEntity> getAllByRadius(@PathVariable float longitude, @PathVariable float latitude) {
+		return markerService.fetchAllChargingStationsByRadius(longitude, latitude);
 	}
 
 	@Override

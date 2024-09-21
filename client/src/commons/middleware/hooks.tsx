@@ -24,6 +24,7 @@ import {
   API_RIDES,
   URL_BACKEND,
 } from './paths';
+import {useRideContext} from '../rides/context';
 
 export type StoreSnapshot<T extends BusinessObject> = [
   Array<T> | null,
@@ -35,6 +36,8 @@ export type StoreSnapshot<T extends BusinessObject> = [
 const useStoreData = <T extends BusinessObject>(
   store: DataStore<T>,
   fetchAll: boolean,
+  longitude?: number,
+  latitude?: number,
 ): T[] | null => {
   const [data, setData] = useState<T[] | null>(null);
 
@@ -60,7 +63,7 @@ const useStoreData = <T extends BusinessObject>(
         // Fetching base data (getAll)
         if (!store.isSync() && store.hasAPI()) {
           if (fetchAll) {
-            await store.fetchAll();
+            await store.fetchAll(longitude, latitude);
           } else {
             store.emptySynchronize();
           }
@@ -81,6 +84,8 @@ const useStoreData = <T extends BusinessObject>(
 const useStoreDataCreate = <T extends BusinessObject>(
   path: string,
   fetchAll: boolean = true,
+  longitude?: number,
+  latitude?: number,
 ): StoreSnapshot<T> => {
   // This one is most generic tho, and can be overrided easily
   // by more relevant workflow
@@ -111,7 +116,7 @@ const useStoreDataCreate = <T extends BusinessObject>(
     store.current.formatUrlThenSet(path, URL_BACKEND + '/' + API_PREFIX);
   }, [path]);
 
-  const data = useStoreData(store.current, fetchAll);
+  const data = useStoreData(store.current, fetchAll, longitude, latitude);
   return [data, store.current];
 };
 
@@ -123,9 +128,23 @@ export const useStoreDataAccounts = (): StoreSnapshot<Account> =>
 export const useStoreDataRides = (): StoreSnapshot<Ride> =>
   useStoreDataCreate<Ride>(API_RIDES);
 
-export const useStoreDataMarkers = (): StoreSnapshot<Marker> =>
-  useStoreDataCreate<Marker>(API_MARKERS);
+export const useStoreDataMarkers = (): StoreSnapshot<Marker> => {
+  const {position} = useRideContext();
+  return useStoreDataCreate<Marker>(
+    API_MARKERS,
+    true,
+    position?.longitude,
+    position?.latitude,
+  );
+};
 
 export const useStoreDataChargingStations =
-  (): StoreSnapshot<ChargingStation> =>
-    useStoreDataCreate<ChargingStation>(API_CHARGING_STATIONS);
+  (): StoreSnapshot<ChargingStation> => {
+    const {position} = useRideContext();
+    return useStoreDataCreate<ChargingStation>(
+      API_CHARGING_STATIONS,
+      true,
+      position?.longitude,
+      position?.latitude,
+    );
+  };

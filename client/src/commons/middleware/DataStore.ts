@@ -117,8 +117,11 @@ export default class DataStore<T extends BusinessObject> {
 
   // Loads from server
 
-  async fetchAll(): Promise<void> {
+  async fetchAll(longitude?: number, latitude?: number): Promise<void> {
     await DataStore.doFetch(this.url!, async url => {
+      if (longitude && latitude) {
+        url = url + `/${longitude},${latitude}`;
+      }
       this.data?.clear(); // Better cleaning up for js engine
       this.data = undefined;
       const res = await fetch(url);
