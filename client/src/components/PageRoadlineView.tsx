@@ -46,11 +46,10 @@ export default function PageRoadlineView() {
   const deferredPosition = useDeferredValue(position);
 
   // Fetching from here is taking in concerns radius filter
-  // as we are waiting for position
   useEffect(() => {
     if (position) {
-      storeDataMarkers.fetchAll();
-      storeDataChargingStations.fetchAll();
+      storeDataMarkers.fetchAll(position.longitude, position.latitude);
+      storeDataChargingStations.fetchAll(position.longitude, position.latitude);
     }
   }, [position]);
 
@@ -249,7 +248,9 @@ export default function PageRoadlineView() {
                 }}
                 image={require('../assets/marker_charging_station.png')}
                 onSelect={() =>
-                  Modal.alert('Informations', chargingStation.name)
+                  Modal.alert('Informations', chargingStation.name, [
+                    {text: 'Close'},
+                  ])
                 }
               />
             ))}
