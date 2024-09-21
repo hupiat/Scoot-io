@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GeocodeRepository extends JpaRepository<GeocodeEntity, Long> {
 
-    @Query(value = 
-    		"SELECT * FROM geocodes WHERE ST_DWithin(ST_SetSRID(ST_MakePoint(longitude, latitude), 4326), "
-    		+ "ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), :radius) = true", nativeQuery = true)
+	@Query(value = 
+		    "SELECT * FROM geocodes WHERE ST_DWithin("
+		    + "ST_Transform(ST_SetSRID(ST_MakePoint(longitude, latitude), 4326), 3857), "
+		    + "ST_Transform(ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), 3857), :radius) = true", 
+		    nativeQuery = true)
     List<GeocodeEntity> findGeocodesAroundPosition(
         @Param("longitude") double longitude, 
         @Param("latitude") double latitude, 
