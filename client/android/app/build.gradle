@@ -72,6 +72,7 @@ dependencies {
     implementation project(':react-native-geolocation-service')
     implementation project(':react-native-vector-icons')
     implementation project(':@react-native-voice_voice')
+    implementation project(':react-native-localize')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

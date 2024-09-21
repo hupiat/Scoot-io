@@ -23,6 +23,7 @@ import {
 } from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 import Voice from '@react-native-voice/voice';
+import * as RNLocalize from 'react-native-localize';
 
 export default function PageRoadlineView() {
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
@@ -263,7 +264,7 @@ export default function PageRoadlineView() {
             onPressItem={async () => {
               if (!isVoiceRecognizing) {
                 if (await Voice.isAvailable()) {
-                  Voice.start('en-US');
+                  Voice.start(RNLocalize.getLocales()[0].languageTag);
                   setIsVoiceRecognizing(true);
                 }
               } else {

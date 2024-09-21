@@ -56,13 +56,13 @@ export default function SearchInputLocations({
     if (query) {
       setDestinationName(null);
     }
-  }, [forceDisplay, query]);
+  }, [query]);
 
   return (
     <SafeAreaView style={styles.autocompleteContainer}>
       <AutocompleteInput
         data={data}
-        value={query || forceDisplay}
+        value={forceDisplay || query}
         hideResults={hideResults}
         containerStyle={styles.autocompleteContainer}
         inputContainerStyle={styles.autocompleteContainer}
