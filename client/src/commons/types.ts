@@ -48,6 +48,11 @@ export interface Marker extends BusinessObject {
   geometry: GeoCode;
 }
 
+export interface ChargingStation extends BusinessObject {
+  name: string;
+  geometry: GeoCode;
+}
+
 // -----------------------------------------------------
 // OTHERS (utilities)
 // -----------------------------------------------------

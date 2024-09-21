@@ -1,9 +1,24 @@
-import {useDeferredValue, useEffect, useRef, useSyncExternalStore} from 'react';
+import {
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import DataStore from './DataStore';
-import {Account, BusinessObject, Marker, Ride, WorkflowStep} from '../types';
+import {
+  Account,
+  BusinessObject,
+  ChargingStation,
+  Marker,
+  Ride,
+  WorkflowStep,
+} from '../types';
 import Toast from 'react-native-toast-message';
 import {
   API_ACCOUNTS,
+  API_CHARGING_STATIONS,
   API_MARKERS,
   API_PREFIX,
   API_RIDES,
@@ -21,17 +36,28 @@ const useStoreData = <T extends BusinessObject>(
   store: DataStore<T>,
   fetchAll: boolean,
 ): T[] | null => {
-  const storeDataDeferred = useDeferredValue(
-    store.isSync() ? [...store.data!] : null,
-  );
+  const [data, setData] = useState<T[] | null>(null);
+
+  const getSnapshot = () => data;
 
   return useSyncExternalStore<T[] | null>(
     onStoreChange => {
-      const suscriber = (data: Set<T>) => {
-        onStoreChange();
+      const suscriber = (newData: Set<T>) => {
+        console.log(newData);
+        if (
+          !data ||
+          newData.size !== data.length ||
+          !data.every(item => newData.has(item))
+        ) {
+          onStoreChange();
+          setData(Array.from(newData));
+        }
       };
 
       const init = async () => {
+        // Queries implemented in DataStore.ts
+        store.subscribe(suscriber);
+
         // Fetching base data (getAll)
         if (!store.isSync() && store.hasAPI()) {
           if (fetchAll) {
@@ -40,19 +66,14 @@ const useStoreData = <T extends BusinessObject>(
             store.emptySynchronize();
           }
         }
-
-        // Then suscribing changes
-        // Queries implemented in DataStore.ts
-        // Need to stay in this closure
-        store.subscribe(suscriber);
       };
 
       init();
 
       return () => store.unsubscribe(suscriber);
     },
-    () => storeDataDeferred,
-    () => storeDataDeferred,
+    getSnapshot,
+    getSnapshot,
   );
 };
 
@@ -105,3 +126,7 @@ export const useStoreDataRides = (): StoreSnapshot<Ride> =>
 
 export const useStoreDataMarkers = (): StoreSnapshot<Marker> =>
   useStoreDataCreate<Marker>(API_MARKERS);
+
+export const useStoreDataChargingStations =
+  (): StoreSnapshot<ChargingStation> =>
+    useStoreDataCreate<ChargingStation>(API_CHARGING_STATIONS);

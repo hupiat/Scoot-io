@@ -27,7 +27,6 @@ import * as RNLocalize from 'react-native-localize';
 
 export default function PageRoadlineView() {
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
-  const [markersData, setMarkersData] = useState<MarkerBusinessObject[]>();
   const {
     position,
     setPosition,
@@ -39,7 +38,7 @@ export default function PageRoadlineView() {
     setDestinationName,
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
-  const [, storeDataMarkers] = useStoreDataMarkers();
+  const [markersData, storeDataMarkers] = useStoreDataMarkers();
 
   const deferredPosition = useDeferredValue(position);
 
@@ -54,12 +53,6 @@ export default function PageRoadlineView() {
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
-  }, []);
-
-  useEffect(() => {
-    storeDataMarkers
-      .fetchAll()
-      .then(() => setMarkersData(Array.from(storeDataMarkers.data!)));
   }, []);
 
   useEffect(() => {
@@ -113,7 +106,6 @@ export default function PageRoadlineView() {
         text: 'OK',
         onPress: () => {
           storeDataMarkers.delete(marker.id).then(() => {
-            setMarkersData(markersData?.filter(m => m.id !== marker.id));
             Toast.show({
               type: 'success',
               text1: 'DELETE',
@@ -144,7 +136,6 @@ export default function PageRoadlineView() {
     storeDataMarkers
       .add(obj as any)
       .then(() => {
-        setMarkersData([...markersData!, obj as any]);
         Toast.show({
           type: 'success',
           text1: 'ADD',

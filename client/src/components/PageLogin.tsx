@@ -20,7 +20,6 @@ import {
 } from '../commons/middleware/paths';
 
 export default function PageLogin() {
-  const [transitionPending, startTransition] = useTransition();
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
   const [mail, setMail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -41,34 +40,32 @@ export default function PageLogin() {
   };
 
   const handlePress = () => {
-    startTransition(() => {
-      if (isSuscribing) {
-        storeDataAccounts
-          .add({
-            email: mail,
-            username: mail,
-            password: passwordConfirm,
-          })
-          .then(() =>
-            Toast.show({
-              type: 'success',
-              text1: 'Suscribe',
-              text2: 'You have been suscribed ! An e-mail has been sent :-)',
-            }),
-          )
-          .catch(e => {
-            displayErrorToast({
-              name: 'Error',
-              message: 'An account with this e-mail is already in base',
-            });
-          });
-      } else {
-        setUser({
+    if (isSuscribing) {
+      storeDataAccounts
+        .add({
           email: mail,
-          password: password,
-        } as Account);
-      }
-    });
+          username: mail,
+          password: passwordConfirm,
+        })
+        .then(() =>
+          Toast.show({
+            type: 'success',
+            text1: 'Suscribe',
+            text2: 'You have been suscribed ! An e-mail has been sent :-)',
+          }),
+        )
+        .catch(e => {
+          displayErrorToast({
+            name: 'Error',
+            message: 'An account with this e-mail is already in base',
+          });
+        });
+    } else {
+      setUser({
+        email: mail,
+        password: password,
+      } as Account);
+    }
   };
 
   const validateSchemaRetrievePassword = (): boolean => {
@@ -134,7 +131,7 @@ export default function PageLogin() {
         )}
         <Button
           type="primary"
-          disabled={!validateSchema() || transitionPending}
+          disabled={!validateSchema()}
           onPress={handlePress}>
           {isSuscribing ? 'Suscribe' : 'Login'}
         </Button>
@@ -142,7 +139,7 @@ export default function PageLogin() {
           <Button
             type="primary"
             onPress={handlePressRetrievePassword}
-            disabled={!validateSchemaRetrievePassword() || transitionPending}>
+            disabled={!validateSchemaRetrievePassword()}>
             Retrieve password
           </Button>
         )}

@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 public class ChargingStationEntity extends AbstractCommonEntity {
 	
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String name;
 	
 	@OneToOne(cascade = CascadeType.ALL)

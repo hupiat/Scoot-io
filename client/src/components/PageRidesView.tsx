@@ -16,18 +16,11 @@ import {fetchGeocodeRouting} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 
 export default function PageRidesView() {
-  const [data, setData] = useState<Ride[] | null>(null);
-  const [, storeDataRides] = useStoreDataRides();
+  const [ridesData, storeDataRides] = useStoreDataRides();
   const {setDestination, position, setDestinationName, setRideGeometry} =
     useRideContext();
 
-  useEffect(() => {
-    storeDataRides
-      .fetchAll()
-      .then(() => setData(Array.from(storeDataRides.data!)));
-  }, []);
-
-  if (!data) {
+  if (!ridesData) {
     return (
       <ActivityIndicator
         size={'large'}
@@ -42,9 +35,9 @@ export default function PageRidesView() {
   return (
     <ScrollView style={styles.scrollView}>
       <Text style={styles.title}>Rides Management</Text>
-      {data.length ? (
+      {ridesData.length ? (
         <List>
-          {data?.map(ride => (
+          {ridesData.map(ride => (
             <TouchableOpacity
               key={ride.id}
               onPress={() => {
@@ -85,7 +78,6 @@ export default function PageRidesView() {
                               text2: 'Ride has been deleted !',
                             }),
                           );
-                          setData(data => data!.filter(d => d.id !== ride.id));
                         },
                       },
                     ]);
