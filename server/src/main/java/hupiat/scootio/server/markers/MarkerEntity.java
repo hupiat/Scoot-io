@@ -18,7 +18,7 @@ public class MarkerEntity extends AbstractCommonEntity {
 	@Enumerated(EnumType.STRING)
 	private MarkerType type;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL)
 	private GeocodeEntity geometry;
 	
 	public MarkerEntity() {
