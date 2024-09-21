@@ -12,6 +12,7 @@ import {
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {
+  useStoreDataChargingStations,
   useStoreDataMarkers,
   useStoreDataRides,
 } from '../commons/middleware/hooks';
@@ -39,6 +40,7 @@ export default function PageRoadlineView() {
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
   const [markersData, storeDataMarkers] = useStoreDataMarkers();
+  const [chargingStationsData] = useStoreDataChargingStations();
 
   const deferredPosition = useDeferredValue(position);
 
@@ -225,6 +227,20 @@ export default function PageRoadlineView() {
                 }}
                 image={require('../assets/marker_dense_traffic.png')}
                 onSelect={() => handleDeleteMarker(marker)}
+              />
+            ))}
+          {chargingStationsData &&
+            chargingStationsData.map(chargingStation => (
+              <Marker
+                key={chargingStation.id}
+                coordinate={{
+                  latitude: chargingStation.geometry.latitude,
+                  longitude: chargingStation.geometry.longitude,
+                }}
+                image={require('../assets/marker_charging_station.png')}
+                onSelect={() =>
+                  Modal.alert('Informations', chargingStation.name)
+                }
               />
             ))}
         </MapView>

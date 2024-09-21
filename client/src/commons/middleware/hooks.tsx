@@ -43,7 +43,6 @@ const useStoreData = <T extends BusinessObject>(
   return useSyncExternalStore<T[] | null>(
     onStoreChange => {
       const suscriber = (newData: Set<T>) => {
-        console.log(newData);
         if (
           !data ||
           newData.size !== data.length ||

@@ -8,8 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-@Table(name = "charging_stations")
 @Entity
+@Table(name = "charging_stations")
 public class ChargingStationEntity extends AbstractCommonEntity {
 	
 	@Column(nullable = false, unique = true)
