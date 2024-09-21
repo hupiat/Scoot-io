@@ -1,4 +1,4 @@
-package hupiat.scootio.server.markers;
+package hupiat.scootio.server.chargingStations;
 
 import java.util.List;
 
@@ -9,34 +9,34 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hupiat.scootio.server.core.controllers.ICommonController;
 
-@RequestMapping(ICommonController.API_PREFIX + "/markers")
+@RequestMapping(ICommonController.API_PREFIX + "/charging_stations")
 @RestController
-public class MarkerController implements ICommonController<MarkerEntity> {
+public class ChargingStationController implements ICommonController<ChargingStationEntity> {
 
-	private final MarkerRepository repository;
+	private final CharginStationRepository repository;
 	
-	public MarkerController(MarkerRepository repository) {
+	public ChargingStationController(CharginStationRepository repository) {
 		super();
 		this.repository = repository;
 	}
 
 	@Override
-	public List<MarkerEntity> getAll() {
+	public List<ChargingStationEntity> getAll() {
 		return repository.findAll();
 	}
 
 	@Override
-	public MarkerEntity getById(@PathVariable long id) {
+	public ChargingStationEntity getById(@PathVariable long id) {
 		return repository.findById(id).orElseThrow();
 	}
 
 	@Override
-	public MarkerEntity add(@RequestBody MarkerEntity entity) {
+	public ChargingStationEntity add(@RequestBody ChargingStationEntity entity) {
 		return repository.save(entity);
 	}
 
 	@Override
-	public MarkerEntity update(@RequestBody MarkerEntity entity) {
+	public ChargingStationEntity update(@RequestBody ChargingStationEntity entity) {
 		return repository.save(entity);
 	}
 
