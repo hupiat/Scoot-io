@@ -14,8 +14,8 @@ public interface GeocodeRepository extends JpaRepository<GeocodeEntity, Long> {
     		"SELECT * FROM geocodes WHERE ST_DWithin(ST_SetSRID(ST_MakePoint(longitude, latitude), 4326), "
     		+ "ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), :radius) = true", nativeQuery = true)
     List<GeocodeEntity> findGeocodesAroundPosition(
-        @Param("longitude") float longitude, 
-        @Param("latitude") float latitude, 
-        @Param("radius") float radius
+        @Param("longitude") double longitude, 
+        @Param("latitude") double latitude, 
+        @Param("radius") double radius
     );
 }
