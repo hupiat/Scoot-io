@@ -5,7 +5,6 @@ import hupiat.scootio.server.markers.GeocodeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -17,7 +16,6 @@ public class RideEntity extends AbstractCommonEntity {
 	private String name;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "destination_id", referencedColumnName = "id")
 	private GeocodeEntity destination;
 	
 	public RideEntity() {

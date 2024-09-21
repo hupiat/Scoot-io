@@ -40,9 +40,19 @@ export default function PageRoadlineView() {
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
   const [markersData, storeDataMarkers] = useStoreDataMarkers();
-  const [chargingStationsData] = useStoreDataChargingStations();
+  const [chargingStationsData, storeDataChargingStations] =
+    useStoreDataChargingStations();
 
   const deferredPosition = useDeferredValue(position);
+
+  // Fetching from here is taking in concerns radius filter
+  // as we are waiting for position
+  useEffect(() => {
+    if (position) {
+      storeDataMarkers.fetchAll();
+      storeDataChargingStations.fetchAll();
+    }
+  }, [position]);
 
   useEffect(() => {
     Voice.onSpeechResults = (result: any) => {

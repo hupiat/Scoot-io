@@ -132,7 +132,7 @@ export const useStoreDataMarkers = (): StoreSnapshot<Marker> => {
   const {position} = useRideContext();
   return useStoreDataCreate<Marker>(
     API_MARKERS,
-    true,
+    false,
     position?.longitude,
     position?.latitude,
   );
@@ -143,7 +143,7 @@ export const useStoreDataChargingStations =
     const {position} = useRideContext();
     return useStoreDataCreate<ChargingStation>(
       API_CHARGING_STATIONS,
-      true,
+      false,
       position?.longitude,
       position?.latitude,
     );

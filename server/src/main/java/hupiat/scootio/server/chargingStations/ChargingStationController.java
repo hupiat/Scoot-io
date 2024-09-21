@@ -15,10 +15,10 @@ import hupiat.scootio.server.markers.MarkerService;
 @RestController
 public class ChargingStationController implements ICommonController<ChargingStationEntity> {
 
-	private final CharginStationRepository repository;
+	private final ChargingStationRepository repository;
 	private final MarkerService markerService;
 	
-	public ChargingStationController(CharginStationRepository repository, MarkerService markerService) {
+	public ChargingStationController(ChargingStationRepository repository, MarkerService markerService) {
 		super();
 		this.repository = repository;
 		this.markerService = markerService;
