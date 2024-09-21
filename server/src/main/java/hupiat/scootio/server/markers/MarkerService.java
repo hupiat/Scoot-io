@@ -28,7 +28,7 @@ public class MarkerService {
 
 	@Transactional
 	public List<MarkerEntity> fetchAllMarkersByRadius(double longitude, double latitude) {
-		List<MarkerEntity> res = new ArrayList<>();
+		List<MarkerEntity> res = new ArrayList<MarkerEntity>();
 		List<GeocodeEntity> geometries = geocodeRepository.findGeocodesAroundPosition(longitude, latitude, LOCAL_SEARCH_RADIUS_METERS);
 		for (GeocodeEntity geocode : geometries) {
 			res.addAll(markerRepository.findAllByGeometry(geocode));
@@ -38,7 +38,7 @@ public class MarkerService {
 	
 	@Transactional
 	public List<ChargingStationEntity> fetchAllChargingStationsByRadius(double longitude, double latitude) {
-		List<ChargingStationEntity> res = new ArrayList<>();
+		List<ChargingStationEntity> res = new ArrayList<ChargingStationEntity>();
 		List<GeocodeEntity> geometries = geocodeRepository.findGeocodesAroundPosition(longitude, latitude, LOCAL_SEARCH_RADIUS_METERS);
 		for (GeocodeEntity geocode : geometries) {
 			res.addAll(charginStationRepository.findAllByGeometry(geocode));
