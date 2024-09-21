@@ -109,7 +109,7 @@ export default function PageLogin() {
         <Input
           placeholder="Email"
           type="email-address"
-          prefix={<Icon name="user-secret" size={20} />}
+          prefix={<Icon name="user" size={20} />}
           value={mail}
           onChangeText={text => setMail(text)}
         />

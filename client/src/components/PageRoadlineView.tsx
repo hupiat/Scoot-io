@@ -299,22 +299,22 @@ export default function PageRoadlineView() {
             actions={[
               {
                 name: 'ride_cancel',
-                text: 'Cancel ride',
+                text: 'Cancel',
                 icon: <Icon name="power-off" color={'white'} size={15} />,
               },
               {
                 name: 'ride_save',
-                text: 'Save ride',
+                text: 'Save',
                 icon: <Icon name="save" color={'white'} size={15} />,
               },
               {
                 name: 'ride_plothole',
-                text: 'Mark plothole as a danger',
+                text: 'Plothole',
                 icon: <Icon name="warning" color={'white'} size={15} />,
               },
               {
                 name: 'ride_dense_traffic',
-                text: 'Mark dense traffic',
+                text: 'Dense traffic',
                 icon: <Icon name="car" color={'white'} size={15} />,
               },
             ]}
