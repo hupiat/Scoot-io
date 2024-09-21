@@ -2,6 +2,7 @@ package hupiat.scootio.server.markers;
 
 import hupiat.scootio.server.core.entities.AbstractCommonEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,7 @@ public class MarkerEntity extends AbstractCommonEntity {
 	@Enumerated(EnumType.STRING)
 	private MarkerType type;
 	
+	@Column(nullable = false)
 	@OneToOne(cascade = CascadeType.ALL)
 	private GeocodeEntity geometry;
 	

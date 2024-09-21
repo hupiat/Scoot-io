@@ -15,6 +15,7 @@ public class ChargingStationEntity extends AbstractCommonEntity {
 	@Column(nullable = false, unique = true)
 	private String name;
 	
+	@Column(nullable = false)
 	@OneToOne(cascade = CascadeType.ALL)
 	private GeocodeEntity geometry;
 	
