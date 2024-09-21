@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface MarkerRepository extends JpaRepository<MarkerEntity, Long> {
 
-	List<MarkerEntity> findAllByGeometry(List<GeocodeEntity> geometries);
+	List<MarkerEntity> findAllByGeometry(GeocodeEntity geometry);
 }

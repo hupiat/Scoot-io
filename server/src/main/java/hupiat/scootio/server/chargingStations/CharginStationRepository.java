@@ -10,5 +10,5 @@ import hupiat.scootio.server.markers.GeocodeEntity;
 @Repository
 public interface CharginStationRepository extends JpaRepository<ChargingStationEntity, Long> {
 
-	List<ChargingStationEntity> findAllByGeometry(List<GeocodeEntity> geometries);
+	List<ChargingStationEntity> findAllByGeometry(GeocodeEntity geometry);
 }

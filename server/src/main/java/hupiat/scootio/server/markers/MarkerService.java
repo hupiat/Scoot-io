@@ -1,5 +1,6 @@
 package hupiat.scootio.server.markers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,12 +26,20 @@ public class MarkerService {
 	}
 
 	public List<MarkerEntity> fetchAllMarkersByRadius(float longitude, float latitude) {
+		List<MarkerEntity> res = new ArrayList<>();
 		List<GeocodeEntity> geometries = geocodeRepository.findGeocodesAroundPosition(longitude, latitude, LOCAL_SEARCH_RADIUS_METERS);
-		return markerRepository.findAllByGeometry(geometries);
+		for (GeocodeEntity geocode : geometries) {
+			res.addAll(markerRepository.findAllByGeometry(geocode));
+		}
+		return res;
 	}
 	
 	public List<ChargingStationEntity> fetchAllChargingStationsByRadius(float longitude, float latitude) {
+		List<ChargingStationEntity> res = new ArrayList<>();
 		List<GeocodeEntity> geometries = geocodeRepository.findGeocodesAroundPosition(longitude, latitude, LOCAL_SEARCH_RADIUS_METERS);
-		return charginStationRepository.findAllByGeometry(geometries);
+		for (GeocodeEntity geocode : geometries) {
+			res.addAll(charginStationRepository.findAllByGeometry(geocode));
+		}
+		return res;
 	}
 }
