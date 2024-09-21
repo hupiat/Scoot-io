@@ -10,19 +10,20 @@ import jakarta.persistence.Table;
 public class GeocodeEntity extends AbstractCommonEntity {
 	
 	@Column(nullable = false)
-	private double latitude;
+	private double longitude;
 	
 	@Column(nullable = false)
-	private double longitude;
+	private double latitude;
+	
 
 	public GeocodeEntity() {
 		super();
 	}
 
-	public GeocodeEntity(float latitude, float longitude) {
+	public GeocodeEntity(float longitude, float latitude) {
 		super();
-		this.latitude = latitude;
 		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 
 	public double getLatitude() {
