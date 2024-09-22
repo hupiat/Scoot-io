@@ -4,7 +4,6 @@ import * as Keychain from 'react-native-keychain';
 export const storeToken = async (username: string, token: string) => {
   try {
     await Keychain.setGenericPassword(username, token);
-    console.log('Token stored securely');
   } catch (error) {
     console.error('Could not store the token securely', error);
   }
@@ -16,11 +15,10 @@ export const getToken = async () => {
     if (credentials) {
       return credentials.password;
     } else {
-      console.log('No token found');
       return null;
     }
   } catch (error) {
-    console.error('Could not retrieve the token', error);
+    console.error('Could not retrieve the secure token', error);
     return null;
   }
 };
@@ -28,7 +26,6 @@ export const getToken = async () => {
 export const removeToken = async () => {
   try {
     await Keychain.resetGenericPassword();
-    console.log('Token removed securely');
   } catch (error) {
     console.error('Could not remove the token securely', error);
   }
