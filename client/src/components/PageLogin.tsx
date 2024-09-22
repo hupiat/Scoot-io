@@ -44,6 +44,7 @@ export default function PageLogin() {
               method: 'POST',
               body: token,
             }),
+          false,
         );
         setUserState(await res?.json());
       }
