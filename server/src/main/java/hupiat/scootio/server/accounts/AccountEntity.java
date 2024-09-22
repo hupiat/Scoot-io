@@ -25,7 +25,7 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 	@Column(nullable = false)
 	private String password;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String token;
 	
 	@Lob

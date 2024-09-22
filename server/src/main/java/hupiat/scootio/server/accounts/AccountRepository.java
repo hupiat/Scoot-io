@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
 	Optional<AccountEntity> findByEmail(String email);
+	
+	Optional<AccountEntity> findByToken(String token);
 }

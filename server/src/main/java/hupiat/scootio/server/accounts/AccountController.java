@@ -86,18 +86,17 @@ public class AccountController implements ICommonController<AccountEntity> {
 			throw new InternalError(e);
 		}
 	}
+	
+	@PostMapping("login_from_token")
+	public AccountEntity loginFromToken(@RequestBody String token, HttpServletRequest req) {
+		AccountEntity account = repository.findByToken(token).orElseThrow();
+		return login(account, req, token);
+	}
 
 	@PostMapping("login")
 	public AccountEntity login(@RequestBody AccountLoginDTO token, HttpServletRequest req) {
 		AccountEntity account = repository.findByEmail(token.email()).orElseThrow();
-		Authentication auth = accountAuthProvider
-				.authenticate(new UsernamePasswordAuthenticationToken(account.getEmail(), token.password(), new ArrayList<>()));
-		SecurityContext sc = SecurityContextHolder.getContext();
-		sc.setAuthentication(auth);
-		HttpSession session = req.getSession(true);
-		session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-		account.setPassword(null);
-		return account;
+		return login(account, req, token.password());
 	}
 
 	@DeleteMapping("logout")
@@ -106,6 +105,17 @@ public class AccountController implements ICommonController<AccountEntity> {
 		Authentication token = context.getAuthentication();
 		AccountEntity account = repository.findByEmail(token.getName()).orElseThrow();
 		session.removeAttribute(SPRING_SECURITY_CONTEXT_KEY);
+		account.setPassword(null);
+		return account;
+	}
+	
+	private AccountEntity login(AccountEntity account, HttpServletRequest req, String passOrToken) {
+		Authentication auth = accountAuthProvider
+				.authenticate(new UsernamePasswordAuthenticationToken(account.getEmail(), passOrToken, new ArrayList<>()));
+		SecurityContext sc = SecurityContextHolder.getContext();
+		sc.setAuthentication(auth);
+		HttpSession session = req.getSession(true);
+		session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
 		account.setPassword(null);
 		return account;
 	}
