@@ -97,14 +97,12 @@ export default function PageProfileView() {
           )}
         </Card>
       </TouchableOpacity>
-      <Text>Email</Text>
       <Input
         disabled
         placeholder={typingUser.email}
         type="email-address"
         style={styles.input}
       />
-      <Text>Username</Text>
       <Input
         placeholder="Username"
         value={typingUser.username}
@@ -116,7 +114,6 @@ export default function PageProfileView() {
           })
         }
       />
-      <Text>Password</Text>
       <Input
         placeholder="Password"
         type="password"
@@ -129,7 +126,6 @@ export default function PageProfileView() {
           })
         }
       />
-      <Text>Confirm password</Text>
       <Input
         placeholder="Confirm password"
         type="password"
@@ -161,7 +157,7 @@ const styles = StyleSheet.create({
   },
   input: {
     left: 25,
-    marginVertical: 5,
+    marginVertical: 10,
   },
   avatar: {
     display: 'flex',
