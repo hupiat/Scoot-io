@@ -1,5 +1,5 @@
 import {ActivityIndicator, List, Modal, View} from '@ant-design/react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useStoreDataRides} from '../commons/middleware/hooks';
-import {Ride} from '../commons/types';
 import dayjs from 'dayjs';
 import {useRideContext} from '../commons/rides/context';
 import Icon from 'react-native-vector-icons/FontAwesome';

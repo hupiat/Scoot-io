@@ -57,7 +57,7 @@ export default function PageRoadlineView() {
       fetchChargingStations(
         position,
         LOCAL_SEARCH_CHARGING_STATIONS_RADIUS_KM,
-      ).then(jsons => setChargingStationsData(jsons as any));
+      ).then(jsons => setChargingStationsData(jsons));
     }
   }, [position]);
 

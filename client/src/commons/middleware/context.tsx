@@ -1,4 +1,4 @@
-import React, {useTransition, useState, Dispatch, SetStateAction} from 'react';
+import React, {useState, Dispatch, SetStateAction} from 'react';
 import {useContext} from 'react';
 import {Account, ContextChildren} from '../../commons/types';
 import DataStore from './DataStore';

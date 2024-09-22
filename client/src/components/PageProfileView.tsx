@@ -1,6 +1,6 @@
 import {Button, Card, Flex, Input} from '@ant-design/react-native';
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {useMiddlewareContext} from '../commons/middleware/context';
 import {Account, WithoutId} from '../commons/types';
 import {
