@@ -252,6 +252,18 @@ export default function PageRoadlineView() {
                 image={require('../assets/marker_charging_station.png')}
                 onSelect={() =>
                   Modal.alert('Informations', chargingStation.name, [
+                    {
+                      text: 'Go',
+                      onPress: async () => {
+                        const coords = await fetchGeocodeRouting(
+                          position!,
+                          chargingStation.geometry,
+                        );
+                        setRideGeometry(coords);
+                        setDestination(chargingStation.geometry);
+                        setDestinationName(chargingStation.name);
+                      },
+                    },
                     {text: 'Close'},
                   ])
                 }
