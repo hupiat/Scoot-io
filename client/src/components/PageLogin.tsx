@@ -34,7 +34,7 @@ export default function PageLogin() {
   } = useMiddlewareContext();
 
   useEffect(() => {
-    const getTokenInternal = async () => {
+    const getTokenThenRequest = async () => {
       const token = await getToken();
       if (token) {
         const res = await DataStore.doFetch(
@@ -49,7 +49,7 @@ export default function PageLogin() {
         setUserState(await res?.json());
       }
     };
-    getTokenInternal();
+    getTokenThenRequest();
   }, []);
 
   const validateSchema = (): boolean => {
