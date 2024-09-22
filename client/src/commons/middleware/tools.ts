@@ -71,7 +71,7 @@ export const fetchChargingStations = (
           stations = [
             ...stations,
             {
-              id: json.AddressInfo.Id,
+              id: json.ID,
               dateCreation: json.DateLastConfirmed,
               name: json.AddressInfo.Title,
               geometry: {
