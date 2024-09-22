@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class MarkerService {
 
-	private static final int LOCAL_SEARCH_RADIUS_METERS = 25000;
+	public static final int LOCAL_SEARCH_RADIUS_METERS = 25000;
 	
 	private final GeocodeRepository geocodeRepository;
 	private final MarkerRepository markerRepository;

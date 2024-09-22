@@ -1,24 +1,9 @@
-import {
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import DataStore from './DataStore';
-import {
-  Account,
-  BusinessObject,
-  ChargingStation,
-  Marker,
-  Ride,
-  WorkflowStep,
-} from '../types';
+import {Account, BusinessObject, Marker, Ride, WorkflowStep} from '../types';
 import Toast from 'react-native-toast-message';
 import {
   API_ACCOUNTS,
-  API_CHARGING_STATIONS,
   API_MARKERS,
   API_PREFIX,
   API_RIDES,
@@ -137,14 +122,3 @@ export const useStoreDataMarkers = (): StoreSnapshot<Marker> => {
     position?.latitude,
   );
 };
-
-export const useStoreDataChargingStations =
-  (): StoreSnapshot<ChargingStation> => {
-    const {position} = useRideContext();
-    return useStoreDataCreate<ChargingStation>(
-      API_CHARGING_STATIONS,
-      false,
-      position?.longitude,
-      position?.latitude,
-    );
-  };

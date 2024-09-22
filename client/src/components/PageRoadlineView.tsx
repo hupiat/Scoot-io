@@ -5,6 +5,7 @@ import MapView, {Marker, MapPolyline} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import SearchInputLocations from './SearchInputLocations';
 import {
+  ChargingStation,
   Marker as MarkerBusinessObject,
   MarkerType,
   Place,
@@ -12,7 +13,6 @@ import {
 import {useRideContext} from '../commons/rides/context';
 import {FloatingAction} from 'react-native-floating-action';
 import {
-  useStoreDataChargingStations,
   useStoreDataMarkers,
   useStoreDataRides,
 } from '../commons/middleware/hooks';
@@ -20,11 +20,14 @@ import {displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   areCoordinatesEqual,
+  fetchChargingStations,
   fetchGeocodeRouting,
+  LOCAL_SEARCH_CHARGING_STATIONS_RADIUS_KM,
 } from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 import Voice from '@react-native-voice/voice';
 import * as RNLocalize from 'react-native-localize';
+import DataStore from '../commons/middleware/DataStore';
 
 export default function PageRoadlineView() {
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
@@ -40,16 +43,21 @@ export default function PageRoadlineView() {
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
   const [markersData, storeDataMarkers] = useStoreDataMarkers();
-  const [chargingStationsData, storeDataChargingStations] =
-    useStoreDataChargingStations();
+  const [chargingStationsData, setChargingStationsData] =
+    useState<ChargingStation[]>();
 
   const deferredPosition = useDeferredValue(position);
 
   // Fetching from here is taking in concerns radius filter
   useEffect(() => {
     if (position) {
+      // Fetching markers
       storeDataMarkers.fetchAll(position.longitude, position.latitude);
-      storeDataChargingStations.fetchAll(position.longitude, position.latitude);
+      // Then fetching charging stations
+      fetchChargingStations(
+        position,
+        LOCAL_SEARCH_CHARGING_STATIONS_RADIUS_KM,
+      ).then(jsons => setChargingStationsData(jsons as any));
     }
   }, [position]);
 
@@ -89,12 +97,7 @@ export default function PageRoadlineView() {
   }, []);
 
   const handlePlaceSelect = async (place: Place) => {
-    const coords = await fetchGeocodeRouting(
-      position!.longitude,
-      position!.latitude,
-      place.geometry.longitude,
-      place.geometry.latitude,
-    );
+    const coords = await fetchGeocodeRouting(position!, place.geometry);
     setDestinationName(place.name);
     setDestination({
       latitude: place.geometry.latitude,

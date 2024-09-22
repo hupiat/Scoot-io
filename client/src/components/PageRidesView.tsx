@@ -47,10 +47,8 @@ export default function PageRidesView() {
                     text: 'OK',
                     onPress: async () => {
                       const coords = await fetchGeocodeRouting(
-                        position!.longitude,
-                        position!.latitude,
-                        ride.destination.longitude,
-                        ride.destination.latitude,
+                        position!,
+                        ride.destination,
                       );
                       setRideGeometry(coords);
                       setDestination(ride.destination);
