@@ -75,7 +75,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 	
 	@PostMapping("retrieve_password/{mail}")
-	void sendNewPassword(@PathVariable String mail) {
+	public void sendNewPassword(@PathVariable String mail) {
 		AccountEntity account = repository.findByEmail(mail).orElseThrow();
 		String newPassword = AccountService.generateNewPasswordForRetrieving(AccountService.NEW_PASSWORD_RETRIEVAL_LENGTH);
 		account.setPassword(newPassword);
@@ -88,7 +88,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 
 	@PostMapping("login")
-	AccountEntity login(@RequestBody AccountLoginDTO token, HttpServletRequest req) {
+	public AccountEntity login(@RequestBody AccountLoginDTO token, HttpServletRequest req) {
 		AccountEntity account = repository.findByEmail(token.email()).orElseThrow();
 		Authentication auth = accountAuthProvider
 				.authenticate(new UsernamePasswordAuthenticationToken(account.getEmail(), token.password(), new ArrayList<>()));
@@ -101,7 +101,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 
 	@DeleteMapping("logout")
-	AccountEntity logout(HttpSession session) {
+	public AccountEntity logout(HttpSession session) {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication token = context.getAuthentication();
 		AccountEntity account = repository.findByEmail(token.getName()).orElseThrow();
