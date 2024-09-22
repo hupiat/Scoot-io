@@ -1,4 +1,4 @@
-import {Button, Card, Flex, Input} from '@ant-design/react-native';
+import {Button, Card, Flex, Input, Switch} from '@ant-design/react-native';
 import React, {useState} from 'react';
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {useMiddlewareContext} from '../commons/middleware/context';
@@ -11,6 +11,10 @@ import {
 import Toast from 'react-native-toast-message';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  COLOR_DARK_MODE_PRIMARY,
+  useDarkModeContext,
+} from '../commons/DarkModeContext';
 
 const baseTypingUser = (user: Account): WithoutId<Account> => ({
   email: user.email,
@@ -25,6 +29,7 @@ export default function PageProfileView() {
     baseTypingUser(user!),
   );
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
+  const {isDarkMode, setIsDarkMode} = useDarkModeContext();
 
   const validateSchema = () => {
     return (
@@ -81,12 +86,25 @@ export default function PageProfileView() {
     );
   };
 
+  const inputStyle = {
+    ...styles.input,
+    color: isDarkMode ? 'white' : 'black',
+  };
+
   return (
     <Flex style={styles.container}>
       <TouchableOpacity onPress={pickImage}>
-        <Card style={styles.avatar}>
+        <Card
+          style={{
+            ...styles.avatar,
+            backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : undefined,
+          }}>
           {!typingUser.picture ? (
-            <Icon name="user-o" style={styles.avatarIcon} />
+            <Icon
+              name="user-o"
+              style={styles.avatarIcon}
+              color={isDarkMode ? 'white' : undefined}
+            />
           ) : (
             <Image
               source={{
@@ -101,12 +119,12 @@ export default function PageProfileView() {
         disabled
         placeholder={typingUser.email}
         type="email-address"
-        style={styles.input}
+        inputStyle={inputStyle}
       />
       <Input
         placeholder="Username"
         value={typingUser.username}
-        style={styles.input}
+        inputStyle={inputStyle}
         onChangeText={username =>
           setTypingUser({
             ...typingUser,
@@ -117,7 +135,7 @@ export default function PageProfileView() {
       <Input
         placeholder="Password"
         type="password"
-        style={styles.input}
+        inputStyle={inputStyle}
         value={typingUser.password}
         onChangeText={password =>
           setTypingUser({
@@ -129,11 +147,14 @@ export default function PageProfileView() {
       <Input
         placeholder="Confirm password"
         type="password"
-        style={styles.input}
+        inputStyle={inputStyle}
         value={passwordConfirm}
         onChangeText={setPasswordConfirm}
       />
       <Flex>
+        <Button type="warning" onPress={handleLogout} style={styles.button}>
+          Logout
+        </Button>
         <Button
           type="primary"
           disabled={!validateSchema()}
@@ -141,10 +162,14 @@ export default function PageProfileView() {
           style={styles.button}>
           Save
         </Button>
-        <Button type="warning" onPress={handleLogout} style={styles.button}>
-          Logout
-        </Button>
       </Flex>
+      <Switch
+        checkedChildren={<Icon name="moon-o" color="white" />}
+        unCheckedChildren={<Icon name="sun-o" color="white" />}
+        checked={isDarkMode}
+        onChange={setIsDarkMode}
+        style={styles.switch}
+      />
     </Flex>
   );
 }
@@ -175,7 +200,10 @@ const styles = StyleSheet.create({
     height: 200,
   },
   button: {
-    marginTop: 40,
+    marginTop: 20,
     marginHorizontal: 15,
+  },
+  switch: {
+    marginTop: 40,
   },
 });

@@ -19,6 +19,10 @@ import {
   API_PREFIX,
   URL_BACKEND,
 } from '../commons/middleware/paths';
+import {
+  COLOR_DARK_MODE_PRIMARY,
+  useDarkModeContext,
+} from '../commons/DarkModeContext';
 
 export default function PageLogin() {
   const [isSuscribing, setIsSuscribing] = useState<boolean>(false);
@@ -32,6 +36,7 @@ export default function PageLogin() {
     shouldSaveToken,
     setShouldSaveToken,
   } = useMiddlewareContext();
+  const {isDarkMode} = useDarkModeContext();
 
   useEffect(() => {
     const getTokenThenRequest = async () => {
@@ -130,19 +135,41 @@ export default function PageLogin() {
   };
 
   return (
-    <SafeAreaView style={styles.rootView}>
+    <SafeAreaView
+      style={{
+        ...styles.rootView,
+        backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : undefined,
+      }}>
       <View style={styles.view}>
         <Input
           placeholder="Email"
           type="email-address"
-          prefix={<Icon name="user" size={20} />}
+          inputStyle={{
+            color: isDarkMode ? 'white' : undefined,
+          }}
+          prefix={
+            <Icon
+              name="user"
+              size={20}
+              color={isDarkMode ? 'white' : undefined}
+            />
+          }
           value={mail}
           onChangeText={text => setMail(text)}
         />
         <Input
           placeholder="Password"
           type="password"
-          prefix={<Icon name="unlock-alt" size={20} />}
+          inputStyle={{
+            color: isDarkMode ? 'white' : undefined,
+          }}
+          prefix={
+            <Icon
+              name="unlock-alt"
+              size={20}
+              color={isDarkMode ? 'white' : undefined}
+            />
+          }
           value={password}
           onChangeText={text => setPassword(text)}
         />
@@ -150,7 +177,16 @@ export default function PageLogin() {
           <Input
             placeholder="Confirm password"
             type="password"
-            prefix={<Icon name="unlock-alt" size={20} />}
+            inputStyle={{
+              color: isDarkMode ? 'white' : undefined,
+            }}
+            prefix={
+              <Icon
+                name="unlock-alt"
+                size={20}
+                color={isDarkMode ? 'white' : undefined}
+              />
+            }
             value={passwordConfirm}
             onChangeText={text => setPasswordConfirm(text)}
           />

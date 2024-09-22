@@ -27,7 +27,198 @@ import {
 import Toast from 'react-native-toast-message';
 import Voice from '@react-native-voice/voice';
 import * as RNLocalize from 'react-native-localize';
-import DataStore from '../commons/middleware/DataStore';
+import {
+  COLOR_DARK_MODE_PRIMARY,
+  useDarkModeContext,
+} from '../commons/DarkModeContext';
+
+const DARK_THEME = [
+  {
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: COLOR_DARK_MODE_PRIMARY,
+      },
+    ],
+  },
+  {
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#FFFFFF',
+      },
+    ],
+  },
+  {
+    elementType: 'labels.text.stroke',
+    stylers: [
+      {
+        color: COLOR_DARK_MODE_PRIMARY,
+      },
+    ],
+  },
+  {
+    featureType: 'administrative',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#4b6878',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.country',
+    elementType: 'geometry.stroke',
+    stylers: [
+      {
+        color: '#4b6878',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.land_parcel',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.locality',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#d59563',
+      },
+    ],
+  },
+  {
+    featureType: 'poi',
+    elementType: 'labels.text',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'poi',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: COLOR_DARK_MODE_PRIMARY,
+      },
+    ],
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: COLOR_DARK_MODE_PRIMARY,
+      },
+    ],
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#6b9a76',
+      },
+    ],
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#37474f',
+      },
+    ],
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry.stroke',
+    stylers: [
+      {
+        color: '#212a31',
+      },
+    ],
+  },
+  {
+    featureType: 'road',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#8a8a8a',
+      },
+    ],
+  },
+  {
+    featureType: 'road.arterial',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#37474f',
+      },
+    ],
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#616161',
+      },
+    ],
+  },
+  {
+    featureType: 'road.highway.controlled_access',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#4e4e4e',
+      },
+    ],
+  },
+  {
+    featureType: 'road.local',
+    elementType: 'labels',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    featureType: 'transit',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#2f3948',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#17263c',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#515c6d',
+      },
+    ],
+  },
+];
 
 export default function PageRoadlineView() {
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
@@ -45,6 +236,7 @@ export default function PageRoadlineView() {
   const [markersData, storeDataMarkers] = useStoreDataMarkers();
   const [chargingStationsData, setChargingStationsData] =
     useState<ChargingStation[]>();
+  const {isDarkMode} = useDarkModeContext();
 
   const deferredPosition = useDeferredValue(position);
 
@@ -195,6 +387,7 @@ export default function PageRoadlineView() {
           showsIndoors
           showsPointsOfInterest
           showsMyLocationButton
+          customMapStyle={isDarkMode ? DARK_THEME : undefined}
           region={
             position
               ? {
@@ -211,7 +404,11 @@ export default function PageRoadlineView() {
                 latitude: deferredPosition.latitude,
                 longitude: deferredPosition.longitude,
               }}
-              image={require('../assets/marker.png')}
+              image={
+                isDarkMode
+                  ? require('../assets/marker_dark_mode.png')
+                  : require('../assets/marker.png')
+              }
             />
           )}
           {deferredPosition && destination && rideGeometry && (

@@ -6,6 +6,10 @@ import {Place} from '../commons/types';
 import {API_MAPBOX} from '../commons/middleware/paths';
 import {MAPBOX_WEB_APi_KEY} from '../commons/_local_constants';
 import {useRideContext} from '../commons/rides/context';
+import {
+  COLOR_DARK_MODE_PRIMARY,
+  useDarkModeContext,
+} from '../commons/DarkModeContext';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;
@@ -22,6 +26,7 @@ export default function SearchInputLocations({
   const [data, setData] = useState<[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const {setDestinationName} = useRideContext();
+  const {isDarkMode} = useDarkModeContext();
 
   const deferredQuery = useDeferredValue(query);
 
@@ -66,14 +71,28 @@ export default function SearchInputLocations({
         hideResults={hideResults || !query}
         containerStyle={styles.autocompleteContainer}
         inputContainerStyle={styles.autocompleteContainer}
+        style={{
+          backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',
+          color: isDarkMode ? 'white' : undefined,
+        }}
         onChangeText={setQuery}
         flatListProps={{
           keyExtractor: item => item.id,
           renderItem: ({item}: {item: any}) => (
             <TouchableOpacity
               onPress={() => handleSelect(item)}
-              style={styles.autoCompleteItem}>
-              <Text>{item.place_name}</Text>
+              style={{
+                ...styles.autoCompleteItem,
+                backgroundColor: isDarkMode
+                  ? COLOR_DARK_MODE_PRIMARY
+                  : undefined,
+              }}>
+              <Text
+                style={{
+                  color: isDarkMode ? 'white' : undefined,
+                }}>
+                {item.place_name}
+              </Text>
             </TouchableOpacity>
           ),
         }}

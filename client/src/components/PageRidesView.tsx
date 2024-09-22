@@ -13,17 +13,23 @@ import {useRideContext} from '../commons/rides/context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchGeocodeRouting} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
+import {
+  COLOR_DARK_MODE_PRIMARY,
+  COLOR_PRIMARY,
+  useDarkModeContext,
+} from '../commons/DarkModeContext';
 
 export default function PageRidesView() {
   const [ridesData, storeDataRides] = useStoreDataRides();
   const {setDestination, position, setDestinationName, setRideGeometry} =
     useRideContext();
+  const {isDarkMode} = useDarkModeContext();
 
   if (!ridesData) {
     return (
       <ActivityIndicator
         size={'large'}
-        color={'blue'}
+        color={COLOR_PRIMARY}
         styles={{
           spinner: styles.indicator,
         }}
@@ -31,9 +37,20 @@ export default function PageRidesView() {
     );
   }
 
+  const emptyMessageStyle = {
+    ...styles.emptyMessage,
+    color: isDarkMode ? 'white' : undefined,
+  };
+
   return (
     <ScrollView style={styles.scrollView}>
-      <Text style={styles.title}>Rides Management</Text>
+      <Text
+        style={{
+          ...styles.title,
+          color: isDarkMode ? 'white' : 'black',
+        }}>
+        Rides Management
+      </Text>
       {ridesData.length ? (
         <List>
           {ridesData.map(ride => (
@@ -56,8 +73,16 @@ export default function PageRidesView() {
                   },
                 ]);
               }}>
-              <List.Item>
-                <View>
+              <List.Item
+                style={{
+                  backgroundColor: isDarkMode
+                    ? COLOR_DARK_MODE_PRIMARY
+                    : undefined,
+                }}>
+                <View
+                  style={{
+                    color: isDarkMode ? 'white' : undefined,
+                  }}>
                   {ride.name} ({dayjs(ride.dateCreation).format('DD/MM/YYYY')})
                 </View>
                 <TouchableOpacity
@@ -79,7 +104,11 @@ export default function PageRidesView() {
                       },
                     ]);
                   }}>
-                  <Icon name="trash-o" size={30} />
+                  <Icon
+                    name="trash-o"
+                    size={30}
+                    color={isDarkMode ? 'white' : undefined}
+                  />
                 </TouchableOpacity>
               </List.Item>
             </TouchableOpacity>
@@ -87,8 +116,8 @@ export default function PageRidesView() {
         </List>
       ) : (
         <>
-          <Text style={styles.emptyMessage}>No data have been found :-(</Text>
-          <Text style={styles.emptyMessage}>Start riding !</Text>
+          <Text style={emptyMessageStyle}>No data have been found :-(</Text>
+          <Text style={emptyMessageStyle}>Start riding !</Text>
         </>
       )}
     </ScrollView>

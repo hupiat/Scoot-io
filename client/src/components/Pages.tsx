@@ -5,6 +5,7 @@ import PagesRideContext from './PagesRideContext';
 import RideContext from '../commons/rides/context';
 import {PermissionsAndroid} from 'react-native';
 import {removeToken, storeToken} from '../commons/tools';
+import DarkModeContext from '../commons/DarkModeContext';
 
 export default function Pages() {
   const {user, shouldSaveToken} = useMiddlewareContext();
@@ -41,13 +42,15 @@ export default function Pages() {
   }, []);
 
   return (
-    <>
-      {!user && <PageLogin />}
-      {user && (
-        <RideContext>
-          <PagesRideContext />
-        </RideContext>
-      )}
-    </>
+    <DarkModeContext>
+      <>
+        {!user && <PageLogin />}
+        {user && (
+          <RideContext>
+            <PagesRideContext />
+          </RideContext>
+        )}
+      </>
+    </DarkModeContext>
   );
 }
