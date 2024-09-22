@@ -63,7 +63,7 @@ export default function SearchInputLocations({
       <AutocompleteInput
         data={data}
         value={forceDisplay || query}
-        hideResults={hideResults}
+        hideResults={hideResults || !query}
         containerStyle={styles.autocompleteContainer}
         inputContainerStyle={styles.autocompleteContainer}
         onChangeText={setQuery}
