@@ -34,6 +34,11 @@ public class AccountAuthProvider implements AuthenticationProvider {
 		}
 
 		if (bCryptPasswordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
+			// Updating token before auth
+			AccountEntity accountEntity = (AccountEntity) user;
+			AccountService accountService = (AccountService) userDetailsService;
+			accountEntity.setToken(AccountService.generateToken());
+			accountEntity = accountService.update(accountEntity);
 			return authentication;
 		}
 

@@ -25,6 +25,9 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 	@Column(nullable = false)
 	private String password;
 	
+	@Column(nullable = false)
+	private String token;
+	
 	@Lob
 	@Nullable
 	private byte[] picture;
@@ -33,18 +36,20 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 		super();
 	}
 
-	public AccountEntity(String email, String username, String password) {
+	public AccountEntity(String email, String username, String password, String token) {
 		super();
 		this.email = email;
 		this.username = username;
 		this.password = password;
+		this.token = token;
 	}
 
-	public AccountEntity(String email, String username, String password, byte[] picture) {
+	public AccountEntity(String email, String username, String password, String token, byte[] picture) {
 		super();
 		this.email = email;
 		this.username = username;
 		this.password = password;
+		this.token = token;
 		this.picture = picture;
 	}
 
@@ -70,6 +75,14 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public byte[] getPicture() {

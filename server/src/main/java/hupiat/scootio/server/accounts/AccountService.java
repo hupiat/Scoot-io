@@ -1,16 +1,15 @@
 package hupiat.scootio.server.accounts;
 
 import java.security.SecureRandom;
+import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import hupiat.scootio.server.core.mailing.EmailSender;
 
@@ -28,21 +27,13 @@ public class AccountService implements UserDetailsService {
 		this.repository = repository;
 	}
 	
-	public AccountEntity login(String email, String password) throws AuthenticationException {
-		AccountEntity entity = repository.findByEmail(email).orElseThrow();
-		if (!encoder.matches(password, entity.getPassword())) {
-			throw new AuthenticationException("Bad password");
-		}
-		return entity;
-	}
-	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return repository.findByEmail(username).orElseThrow();
 	}
 
 	public AccountEntity insert(String username, String email, String password) throws AddressException, MessagingException {
-		AccountEntity entity = new AccountEntity(email, username, encoder.encode(password));
+		AccountEntity entity = new AccountEntity(email, username, encoder.encode(password), AccountService.generateToken());
 		entity = repository.save(entity);
 		EmailSender.sendConfirmationSuscribe(email);
 		return entity;
@@ -58,9 +49,13 @@ public class AccountService implements UserDetailsService {
 		newEntity.setPassword(encoder.encode(newEntity.getPassword()));
 		return repository.save(newEntity);
 	}
+	
+	public static String generateToken() {
+		return UUID.randomUUID().toString();
+	}
 
 	public static final int NEW_PASSWORD_RETRIEVAL_LENGTH = 10;
-	public static final String generateNewPasswordForRetrieving(int length) {
+	public static String generateNewPasswordForRetrieving(int length) {
         if (length < 1) {
         	throw new IllegalArgumentException("length should be 1 or more");
         }
