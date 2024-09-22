@@ -1,5 +1,5 @@
 import {Modal, View} from '@ant-design/react-native';
-import React, {useDeferredValue, useEffect, useState} from 'react';
+import React, {useDeferredValue, useEffect, useRef, useState} from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import MapView, {Marker, MapPolyline} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
@@ -31,6 +31,7 @@ import {
   COLOR_DARK_MODE_PRIMARY,
   useDarkModeContext,
 } from '../commons/DarkModeContext';
+import MyLocationButton from './MyLocationButton';
 
 const DARK_THEME = [
   {
@@ -221,6 +222,7 @@ const DARK_THEME = [
 ];
 
 export default function PageRoadlineView() {
+  const mapRef = useRef<MapView | null>(null);
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
   const {
     position,
@@ -378,6 +380,7 @@ export default function PageRoadlineView() {
     <>
       <View style={styles.mapContainer}>
         <MapView
+          ref={mapRef}
           style={styles.mapStyle}
           showsTraffic
           showsScale
@@ -386,7 +389,6 @@ export default function PageRoadlineView() {
           showsIndoorLevelPicker
           showsIndoors
           showsPointsOfInterest
-          showsMyLocationButton
           customMapStyle={isDarkMode ? DARK_THEME : undefined}
           region={
             position
@@ -505,6 +507,18 @@ export default function PageRoadlineView() {
           />
         </View>
       )}
+      <MyLocationButton
+        onPress={() => {
+          if (position) {
+            mapRef.current?.animateToRegion({
+              latitude: position.latitude,
+              longitude: position.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+          }
+        }}
+      />
       {!!destination && (
         <View>
           <FloatingAction
