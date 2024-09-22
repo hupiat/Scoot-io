@@ -39,7 +39,7 @@ public class AccountAuthProvider implements AuthenticationProvider {
 			// Updating token before auth
 			AccountService accountService = (AccountService) userDetailsService;
 			accountEntity.setToken(AccountService.generateToken());
-			accountEntity = accountService.update(accountEntity);
+			accountEntity = accountService.update(accountEntity, false);
 			return authentication;
 		}
 

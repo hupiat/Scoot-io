@@ -45,8 +45,10 @@ public class AccountService implements UserDetailsService {
 		return repository.save(entity);
 	}
 	
-	public AccountEntity update(AccountEntity newEntity) {
-		newEntity.setPassword(encoder.encode(newEntity.getPassword()));
+	public AccountEntity update(AccountEntity newEntity, boolean shouldEncode) {
+		if (shouldEncode) {
+			newEntity.setPassword(encoder.encode(newEntity.getPassword()));
+		}
 		return repository.save(newEntity);
 	}
 	

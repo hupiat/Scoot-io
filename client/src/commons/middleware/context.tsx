@@ -1,4 +1,4 @@
-import React, {useTransition, useState} from 'react';
+import React, {useTransition, useState, Dispatch, SetStateAction} from 'react';
 import {useContext} from 'react';
 import {Account, ContextChildren} from '../../commons/types';
 import DataStore from './DataStore';
@@ -9,7 +9,10 @@ import Toast from 'react-native-toast-message';
 
 interface IMiddlewareContext {
   user: Account | null;
-  setUser: (user: Account | null) => Promise<void | boolean>;
+  setUser: (user: Account | null) => Promise<boolean>;
+  setUserState: Dispatch<SetStateAction<Account | null>>;
+  shouldSaveToken: boolean;
+  setShouldSaveToken: Dispatch<SetStateAction<boolean>>;
   // Note this datastore should always be fetched from context for
   // performances concern
   storeDataAccounts: DataStore<Account>;
@@ -24,6 +27,7 @@ interface IProps {
 }
 
 const MiddlewareContext = ({children}: IProps) => {
+  const [shouldSaveToken, setShouldSaveToken] = useState<boolean>(true);
   const [user, setUserState] = useState<Account | null>(null);
   const [pendingUserTransition, startUserTransition] = useTransition();
 
@@ -31,7 +35,7 @@ const MiddlewareContext = ({children}: IProps) => {
   const [, storeDataAccounts] = useStoreDataAccounts();
 
   // State reducer (login + logout)
-  const setUser = async (user: Account | null): Promise<void | boolean> => {
+  const setUser = async (user: Account | null): Promise<boolean> => {
     if (!user) {
       startUserTransition(() => {
         DataStore.doFetch(
@@ -96,7 +100,10 @@ const MiddlewareContext = ({children}: IProps) => {
       value={{
         user,
         setUser,
+        setUserState,
         storeDataAccounts,
+        setShouldSaveToken,
+        shouldSaveToken,
       }}>
       {children}
     </SetupMiddlewareContext.Provider>

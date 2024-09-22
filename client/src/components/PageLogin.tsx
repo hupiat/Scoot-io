@@ -1,5 +1,5 @@
-import {Button, Input, Modal} from '@ant-design/react-native';
-import React, {useState, useTransition} from 'react';
+import {Button, Input, Modal, Switch} from '@ant-design/react-native';
+import React, {useEffect, useState, useTransition} from 'react';
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import logo from '../assets/logo.png';
 import {useMiddlewareContext} from '../commons/middleware/context';
@@ -7,6 +7,7 @@ import {Account} from '../commons/types';
 import {FloatingAction} from 'react-native-floating-action';
 import {
   displayErrorToast,
+  getToken,
   validateEmail,
   validatePassword,
 } from '../commons/tools';
@@ -24,7 +25,31 @@ export default function PageLogin() {
   const [mail, setMail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = useState<string>('');
-  const {setUser, storeDataAccounts} = useMiddlewareContext();
+  const {
+    setUser,
+    setUserState,
+    storeDataAccounts,
+    shouldSaveToken,
+    setShouldSaveToken,
+  } = useMiddlewareContext();
+
+  useEffect(() => {
+    const getTokenInternal = async () => {
+      const token = await getToken();
+      if (token) {
+        const res = await DataStore.doFetch(
+          `${URL_BACKEND}/${API_PREFIX}/${API_ACCOUNTS}/login_from_token`,
+          url =>
+            fetch(url, {
+              method: 'POST',
+              body: token,
+            }),
+        );
+        setUserState(await res?.json());
+      }
+    };
+    getTokenInternal();
+  }, []);
 
   const validateSchema = (): boolean => {
     if (isSuscribing) {
@@ -136,12 +161,21 @@ export default function PageLogin() {
           {isSuscribing ? 'Suscribe' : 'Login'}
         </Button>
         {!isSuscribing && (
-          <Button
-            type="primary"
-            onPress={handlePressRetrievePassword}
-            disabled={!validateSchemaRetrievePassword()}>
-            Retrieve password
-          </Button>
+          <>
+            <Button
+              type="primary"
+              onPress={handlePressRetrievePassword}
+              disabled={!validateSchemaRetrievePassword()}>
+              Retrieve password
+            </Button>
+            <Switch
+              style={styles.switch}
+              checkedChildren={<Icon name="save" color="white" />}
+              unCheckedChildren={<Icon name="save" color="white" />}
+              checked={shouldSaveToken}
+              onChange={setShouldSaveToken}
+            />
+          </>
         )}
       </View>
       <Image source={logo} style={styles.logo} />
@@ -170,5 +204,9 @@ const styles = StyleSheet.create({
     width: 400,
     height: 400,
     top: 85,
+  },
+  switch: {
+    top: 20,
+    alignSelf: 'center',
   },
 });

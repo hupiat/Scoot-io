@@ -73,6 +73,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':@react-native-voice_voice')
     implementation project(':react-native-localize')
+    implementation project(':react-native-keychain')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

@@ -66,7 +66,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 
 	@Override
 	public AccountEntity update(@RequestBody AccountEntity entity) {
-		return service.update(entity);
+		return service.update(entity, true);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 		AccountEntity account = repository.findByEmail(mail).orElseThrow();
 		String newPassword = AccountService.generateNewPasswordForRetrieving(AccountService.NEW_PASSWORD_RETRIEVAL_LENGTH);
 		account.setPassword(newPassword);
-		account = service.update(account);
+		account = service.update(account, true);
 		try {
 			EmailSender.sendNewPasswordRetrieving(mail, newPassword);
 		} catch (MessagingException e) {

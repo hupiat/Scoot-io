@@ -4,9 +4,20 @@ import PageLogin from './PageLogin';
 import PagesRideContext from './PagesRideContext';
 import RideContext from '../commons/rides/context';
 import {PermissionsAndroid} from 'react-native';
+import {removeToken, storeToken} from '../commons/tools';
 
 export default function Pages() {
-  const {user} = useMiddlewareContext();
+  const {user, shouldSaveToken} = useMiddlewareContext();
+
+  useEffect(() => {
+    if (user && shouldSaveToken) {
+      removeToken();
+      storeToken(user.username, user.token!);
+    }
+    if (user && !shouldSaveToken) {
+      removeToken();
+    }
+  }, [user, shouldSaveToken]);
 
   useEffect(() => {
     const requestPermissions = async () => {
