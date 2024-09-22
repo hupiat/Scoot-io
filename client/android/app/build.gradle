@@ -30,10 +30,11 @@ android {
     defaultConfig {
         applicationId "com.scootio"
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
+    
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -42,10 +43,10 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('my-release-key.keystore')
-            storePassword '7657sc'
-            keyAlias 'my-key-alias'
-            keyPassword '7657sc'
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
         }
     }
     buildTypes {
@@ -53,11 +54,10 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
