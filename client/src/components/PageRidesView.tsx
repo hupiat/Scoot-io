@@ -1,5 +1,11 @@
-import {ActivityIndicator, List, Modal, View} from '@ant-design/react-native';
-import React, {useEffect, useMemo} from 'react';
+import {
+  ActivityIndicator,
+  Input,
+  List,
+  Modal,
+  View,
+} from '@ant-design/react-native';
+import React, {useDeferredValue, useEffect, useMemo, useState} from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -24,6 +30,7 @@ import {
 import {Ride} from '../commons/types';
 
 export default function PageRidesView() {
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [ridesData, storeDataRides] = useStoreDataRides();
   const {
     setDestination,
@@ -34,17 +41,34 @@ export default function PageRidesView() {
   } = useRideContext();
   const {isDarkMode} = useDarkModeContext();
 
-  let sortedRidesData = useMemo<Ride[] | undefined>(() => {
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+
+  let filteredAndSortedRidesData = useMemo<Ride[] | undefined>(() => {
     if (ridesData) {
-      const sorted = [...ridesData];
-      sorted.sort((a, b) => {
+      let res = [...ridesData];
+      if (deferredSearchQuery) {
+        res = res.filter(data => {
+          const words = data.name.split(' ');
+          for (const word of words) {
+            if (
+              word
+                .toLocaleLowerCase()
+                .startsWith(deferredSearchQuery.toLocaleLowerCase())
+            ) {
+              return true;
+            }
+          }
+          return false;
+        });
+      }
+      res.sort((a, b) => {
         const aDist = computePathDistanceKm(position!, a.destination);
         const bDist = computePathDistanceKm(position!, b.destination);
         return aDist - bDist;
       });
-      return sorted;
+      return res;
     }
-  }, [ridesData]);
+  }, [ridesData, deferredSearchQuery]);
 
   if (!ridesData) {
     return (
@@ -64,7 +88,7 @@ export default function PageRidesView() {
   };
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView style={styles.scrollView} stickyHeaderIndices={[1]}>
       <Text
         style={{
           ...styles.title,
@@ -72,9 +96,18 @@ export default function PageRidesView() {
         }}>
         Rides Management
       </Text>
+      <Input
+        placeholder="Search"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        inputStyle={{
+          color: isDarkMode ? 'white' : undefined,
+          backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',
+        }}
+      />
       {ridesData.length ? (
         <List>
-          {sortedRidesData!.map(ride => (
+          {filteredAndSortedRidesData!.map(ride => (
             <TouchableOpacity
               key={ride.id}
               onPress={() => {
@@ -104,6 +137,7 @@ export default function PageRidesView() {
                 <View
                   style={{
                     color: isDarkMode ? 'white' : undefined,
+                    padding: 10,
                   }}>
                   {ride.name} ({dayjs(ride.dateCreation).format('DD/MM/YYYY')})
                   {'\n\n'}
