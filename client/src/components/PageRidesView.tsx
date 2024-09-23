@@ -11,7 +11,10 @@ import {useStoreDataRides} from '../commons/middleware/hooks';
 import dayjs from 'dayjs';
 import {useRideContext} from '../commons/rides/context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {fetchGeocodeRouting} from '../commons/middleware/tools';
+import {
+  computePathDistanceKm,
+  fetchGeocodeRouting,
+} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 import {
   COLOR_DARK_MODE_PRIMARY,
@@ -84,6 +87,8 @@ export default function PageRidesView() {
                     color: isDarkMode ? 'white' : undefined,
                   }}>
                   {ride.name} ({dayjs(ride.dateCreation).format('DD/MM/YYYY')})
+                  {'\n\n'}
+                  {computePathDistanceKm(position!, ride.destination)} km
                 </View>
                 <TouchableOpacity
                   style={styles.deleteIcon}

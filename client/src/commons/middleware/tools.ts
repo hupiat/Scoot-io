@@ -16,6 +16,35 @@ export const areCoordinatesEqual = (
   );
 };
 
+export const computePathDistanceKm = (position: GeoCode, other: GeoCode) => {
+  const EARTH_RADIUS_KM = 6371;
+
+  const toRadians = (degree: number) => degree * (Math.PI / 180);
+
+  const lon1Rad = toRadians(position.longitude);
+  const lat1Rad = toRadians(position.latitude);
+  const lon2Rad = toRadians(other.longitude);
+  const lat2Rad = toRadians(other.latitude);
+
+  const deltaLat = lat2Rad - lat1Rad;
+  const deltaLon = lon2Rad - lon1Rad;
+
+  // Haversine formula
+  const a =
+    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.cos(lat1Rad) *
+      Math.cos(lat2Rad) *
+      Math.sin(deltaLon / 2) *
+      Math.sin(deltaLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  // Path distance computation
+  const distance = EARTH_RADIUS_KM * c;
+
+  return distance.toFixed(3);
+};
+
 export const fetchGeocodeRouting = async (
   position: GeoCode,
   destination: GeoCode,
