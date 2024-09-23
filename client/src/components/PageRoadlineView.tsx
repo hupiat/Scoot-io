@@ -421,7 +421,11 @@ export default function PageRoadlineView() {
             />
           )}
           {deferredPosition && destination && rideGeometry && (
-            <MapPolyline strokeWidth={5} coordinates={rideGeometry} />
+            <MapPolyline
+              strokeWidth={5}
+              coordinates={rideGeometry}
+              strokeColor={isDarkMode ? 'white' : undefined}
+            />
           )}
           {plotholesMarkers &&
             plotholesMarkers.map(marker => (
