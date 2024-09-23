@@ -31,7 +31,7 @@ import {
   COLOR_DARK_MODE_PRIMARY,
   useDarkModeContext,
 } from '../commons/DarkModeContext';
-import MyLocationButton from './MyLocationButton';
+import ButtonMyLocation from './ButtonMyLocation';
 import SecurityLevelIndicator from './SecurityLevelIndicator';
 
 const DARK_THEME = [
@@ -519,7 +519,7 @@ export default function PageRoadlineView() {
           />
         </View>
       )}
-      <MyLocationButton
+      <ButtonMyLocation
         onPress={() => {
           if (position) {
             mapRef.current?.animateToRegion({

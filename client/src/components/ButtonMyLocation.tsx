@@ -6,7 +6,7 @@ interface IProps {
   onPress: () => void;
 }
 
-export default function MyLocationButton({onPress}: IProps) {
+export default function ButtonMyLocation({onPress}: IProps) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
       <Icon name="crosshairs" size={25} color={'white'} />
