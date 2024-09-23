@@ -16,7 +16,10 @@ export const areCoordinatesEqual = (
   );
 };
 
-export const computePathDistanceKm = (position: GeoCode, other: GeoCode) => {
+export const computePathDistanceKm = (
+  position: GeoCode,
+  other: GeoCode,
+): number => {
   const EARTH_RADIUS_KM = 6371;
 
   const toRadians = (degree: number) => degree * (Math.PI / 180);
@@ -42,7 +45,7 @@ export const computePathDistanceKm = (position: GeoCode, other: GeoCode) => {
   // Path distance computation
   const distance = EARTH_RADIUS_KM * c;
 
-  return distance.toFixed(3);
+  return Number(distance.toFixed(3));
 };
 
 export const fetchGeocodeRouting = async (

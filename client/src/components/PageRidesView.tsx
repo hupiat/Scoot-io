@@ -1,5 +1,5 @@
 import {ActivityIndicator, List, Modal, View} from '@ant-design/react-native';
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -21,6 +21,7 @@ import {
   COLOR_PRIMARY,
   useDarkModeContext,
 } from '../commons/DarkModeContext';
+import {Ride} from '../commons/types';
 
 export default function PageRidesView() {
   const [ridesData, storeDataRides] = useStoreDataRides();
@@ -32,6 +33,18 @@ export default function PageRidesView() {
     securityLevel,
   } = useRideContext();
   const {isDarkMode} = useDarkModeContext();
+
+  let sortedRidesData = useMemo<Ride[] | undefined>(() => {
+    if (ridesData) {
+      const sorted = [...ridesData];
+      sorted.sort((a, b) => {
+        const aDist = computePathDistanceKm(position!, a.destination);
+        const bDist = computePathDistanceKm(position!, b.destination);
+        return aDist - bDist;
+      });
+      return sorted;
+    }
+  }, [ridesData]);
 
   if (!ridesData) {
     return (
@@ -61,7 +74,7 @@ export default function PageRidesView() {
       </Text>
       {ridesData.length ? (
         <List>
-          {ridesData.map(ride => (
+          {sortedRidesData!.map(ride => (
             <TouchableOpacity
               key={ride.id}
               onPress={() => {
