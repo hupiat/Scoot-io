@@ -17,7 +17,7 @@ function App(): React.JSX.Element {
     <MiddlewareContext>
       <Provider locale={enUS}>
         <Pages />
-        <Toast position="bottom" />
+        <Toast />
       </Provider>
     </MiddlewareContext>
   );
