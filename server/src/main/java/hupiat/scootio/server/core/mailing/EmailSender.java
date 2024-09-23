@@ -11,8 +11,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import hupiat.scootio.server.accounts.AccountService;
-
 public abstract class EmailSender {
 	private static final String HOST = "smtp.gmail.com";
 	private static final String USERNAME = "hugopiatlillo@gmail.com"; 
