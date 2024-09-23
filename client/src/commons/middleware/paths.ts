@@ -8,6 +8,7 @@ export const API_MARKERS = 'markers';
 
 export const API_MAPBOX = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
 
-export const API_OSRM = 'http://router.project-osrm.org/route/v1/cycling/';
+export const API_MAPBOX_DIRECTIONS =
+  'https://api.mapbox.com/directions/v5/mapbox/';
 
 export const API_OPEN_CHARGE_MAP = 'https://api.openchargemap.io/v3/poi';

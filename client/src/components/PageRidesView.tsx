@@ -24,8 +24,13 @@ import {
 
 export default function PageRidesView() {
   const [ridesData, storeDataRides] = useStoreDataRides();
-  const {setDestination, position, setDestinationName, setRideGeometry} =
-    useRideContext();
+  const {
+    setDestination,
+    position,
+    setDestinationName,
+    setRideGeometry,
+    securityLevel,
+  } = useRideContext();
   const {isDarkMode} = useDarkModeContext();
 
   if (!ridesData) {
@@ -68,6 +73,7 @@ export default function PageRidesView() {
                       const coords = await fetchGeocodeRouting(
                         position!,
                         ride.destination,
+                        securityLevel,
                       );
                       setRideGeometry(coords);
                       setDestination(ride.destination);

@@ -54,6 +54,8 @@ export interface ChargingStation extends BusinessObject {
   geometry: GeoCode;
 }
 
+export type SecurityLevel = 'cycling' | 'driving-traffic' | 'walking';
+
 // -----------------------------------------------------
 // OTHERS (utilities)
 // -----------------------------------------------------

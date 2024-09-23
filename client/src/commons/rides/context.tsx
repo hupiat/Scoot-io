@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {useContext} from 'react';
-import {ContextChildren, GeoCode} from '../../commons/types';
+import {ContextChildren, GeoCode, SecurityLevel} from '../../commons/types';
 
 interface IRideContext {
   position: GeoCode | undefined;
@@ -11,6 +11,8 @@ interface IRideContext {
   setDestinationName: Dispatch<SetStateAction<string | null>>;
   rideGeometry: GeoCode[] | null;
   setRideGeometry: Dispatch<SetStateAction<GeoCode[] | null>>;
+  securityLevel: SecurityLevel;
+  setSecurityLevel: Dispatch<SetStateAction<SecurityLevel>>;
 }
 
 const SetupRideContext = React.createContext<IRideContext | undefined>(
@@ -23,6 +25,7 @@ interface IProps {
 
 const RideContext = ({children}: IProps) => {
   const [position, setPosition] = useState<GeoCode>();
+  const [securityLevel, setSecurityLevel] = useState<SecurityLevel>('cycling');
   const [destinationName, setDestinationName] = useState<string | null>(null);
   const [destination, setDestination] = useState<GeoCode | null>(null);
   const [rideGeometry, setRideGeometry] = useState<GeoCode[] | null>(null);
@@ -38,6 +41,8 @@ const RideContext = ({children}: IProps) => {
         setRideGeometry,
         destinationName,
         setDestinationName,
+        securityLevel,
+        setSecurityLevel,
       }}>
       {children}
     </SetupRideContext.Provider>

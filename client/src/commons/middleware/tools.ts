@@ -1,7 +1,7 @@
-import {OPEN_CHARGE_MAP_API_KEY} from '../_local_constants';
-import {ChargingStation, GeoCode} from '../types';
+import {MAPBOX_WEB_APi_KEY, OPEN_CHARGE_MAP_API_KEY} from '../_local_constants';
+import {ChargingStation, GeoCode, SecurityLevel} from '../types';
 import DataStore from './DataStore';
-import {API_OPEN_CHARGE_MAP, API_OSRM} from './paths';
+import {API_MAPBOX_DIRECTIONS, API_OPEN_CHARGE_MAP} from './paths';
 
 export const LOCAL_SEARCH_CHARGING_STATIONS_RADIUS_KM = 25;
 
@@ -48,11 +48,14 @@ export const computePathDistanceKm = (position: GeoCode, other: GeoCode) => {
 export const fetchGeocodeRouting = async (
   position: GeoCode,
   destination: GeoCode,
+  securityLevel: SecurityLevel,
 ): Promise<GeoCode[]> => {
   return new Promise((resolve, reject) => {
     let coords: GeoCode[] = [];
     DataStore.doFetch(
-      API_OSRM +
+      API_MAPBOX_DIRECTIONS +
+        securityLevel +
+        '/' +
         position.longitude +
         ',' +
         position.latitude +
@@ -60,7 +63,8 @@ export const fetchGeocodeRouting = async (
         destination.longitude +
         ',' +
         destination.latitude +
-        '?steps=true',
+        '?steps=true&access_token=' +
+        MAPBOX_WEB_APi_KEY,
       url => fetch(url),
     )
       .then(res => res?.json())

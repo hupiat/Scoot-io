@@ -32,6 +32,7 @@ import {
   useDarkModeContext,
 } from '../commons/DarkModeContext';
 import MyLocationButton from './MyLocationButton';
+import SecurityLevelIndicator from './SecurityLevelIndicator';
 
 const DARK_THEME = [
   {
@@ -233,6 +234,8 @@ export default function PageRoadlineView() {
     setRideGeometry,
     destinationName,
     setDestinationName,
+    securityLevel,
+    setSecurityLevel,
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
   const [markersData, storeDataMarkers] = useStoreDataMarkers();
@@ -291,7 +294,11 @@ export default function PageRoadlineView() {
   }, []);
 
   const handlePlaceSelect = async (place: Place) => {
-    const coords = await fetchGeocodeRouting(position!, place.geometry);
+    const coords = await fetchGeocodeRouting(
+      position!,
+      place.geometry,
+      securityLevel,
+    );
     setDestinationName(place.name);
     setDestination({
       latitude: place.geometry.latitude,
@@ -457,6 +464,7 @@ export default function PageRoadlineView() {
                         const coords = await fetchGeocodeRouting(
                           position!,
                           chargingStation.geometry,
+                          securityLevel,
                         );
                         setRideGeometry(coords);
                         setDestination(chargingStation.geometry);
@@ -519,6 +527,7 @@ export default function PageRoadlineView() {
           }
         }}
       />
+      <SecurityLevelIndicator />
       {!!destination && (
         <View>
           <FloatingAction
