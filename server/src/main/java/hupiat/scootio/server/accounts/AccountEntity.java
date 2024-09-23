@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import hupiat.scootio.server.core.entities.AbstractCommonEntity;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
@@ -34,6 +36,7 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 	
 	@Lob
 	@Nullable
+	@Basic(fetch = FetchType.EAGER)
 	private byte[] picture;
 
 	public AccountEntity() {
