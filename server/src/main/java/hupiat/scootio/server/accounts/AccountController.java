@@ -23,6 +23,7 @@ import hupiat.scootio.server.core.controllers.ICommonController;
 import hupiat.scootio.server.core.mailing.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @RequestMapping(ICommonController.API_PREFIX + "/accounts")
 @RestController
@@ -72,6 +73,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 	
 	@PostMapping("retrieve_password/{mail}")
+	@Transactional
 	public void sendNewPassword(@PathVariable String mail) {
 		AccountEntity account = repository.findByEmail(mail).orElseThrow();
 		String newPassword = AccountService.generateNewPasswordForRetrieving(AccountService.NEW_PASSWORD_RETRIEVAL_LENGTH);
@@ -97,6 +99,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 	}
 
 	@DeleteMapping("logout")
+	@Transactional
 	public AccountEntity logout(HttpSession session) {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication token = context.getAuthentication();
@@ -106,6 +109,7 @@ public class AccountController implements ICommonController<AccountEntity> {
 		return account;
 	}
 	
+	@Transactional
 	private AccountEntity login(AccountEntity account, HttpServletRequest req, String passOrToken) {
 		Authentication auth = accountAuthProvider
 				.authenticate(new UsernamePasswordAuthenticationToken(account.getEmail(), passOrToken, new ArrayList<>()));

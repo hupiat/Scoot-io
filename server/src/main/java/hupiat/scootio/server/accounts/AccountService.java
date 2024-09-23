@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import hupiat.scootio.server.core.mailing.EmailSender;
+import jakarta.transaction.Transactional;
 
 // Instantiated by SecurityConfigAdapter to avoid circular dependencies for password encoder
 // Still a bean at all
@@ -32,6 +33,7 @@ public class AccountService implements UserDetailsService {
 		return repository.findByEmail(username).orElseThrow();
 	}
 
+	@Transactional
 	public AccountEntity insert(String username, String email, String password) throws AddressException, MessagingException {
 		AccountEntity entity = new AccountEntity(email, username, encoder.encode(password), AccountService.generateToken());
 		entity = repository.save(entity);
@@ -39,6 +41,7 @@ public class AccountService implements UserDetailsService {
 		return entity;
 	}
 	
+	@Transactional
 	public AccountEntity insert(String username, String email, String password, byte[] picture) throws AddressException, MessagingException {
 		AccountEntity entity = insert(username, email, password);
 		entity.setPicture(picture);
