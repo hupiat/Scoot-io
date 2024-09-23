@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import hupiat.scootio.server.core.entities.AbstractCommonEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -23,6 +25,7 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 	private String username;
 	
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
 	
 	@Column(nullable = false, unique = true)

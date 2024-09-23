@@ -105,7 +105,6 @@ public class AccountController implements ICommonController<AccountEntity> {
 		Authentication token = context.getAuthentication();
 		AccountEntity account = repository.findByEmail(token.getName()).orElseThrow();
 		session.removeAttribute(SPRING_SECURITY_CONTEXT_KEY);
-		account.setPassword(null);
 		return account;
 	}
 	
@@ -117,7 +116,6 @@ public class AccountController implements ICommonController<AccountEntity> {
 		sc.setAuthentication(auth);
 		HttpSession session = req.getSession(true);
 		session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-		account.setPassword(null);
 		return account;
 	}
 }
