@@ -27,7 +27,6 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 	
 	@Column(nullable = false)
 	@JsonIgnore
-	@JsonProperty
 	private String password;
 	
 	@Column(nullable = false, unique = true)
@@ -74,6 +73,7 @@ public class AccountEntity extends AbstractCommonEntity implements UserDetails {
 		this.username = username;
 	}
 
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	public String getPassword() {
 		return password;
 	}
