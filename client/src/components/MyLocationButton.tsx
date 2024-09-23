@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {COLOR_PRIMARY} from '../commons/DarkModeContext';
 
 interface IProps {
   onPress: () => void;

@@ -1,5 +1,5 @@
 import {Button, Input, Modal, Switch} from '@ant-design/react-native';
-import React, {useEffect, useState, useTransition} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import logo from '../assets/logo.png';
 import {useMiddlewareContext} from '../commons/middleware/context';
