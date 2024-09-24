@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     left: '50%',
-    bottom: 75,
+    bottom: 60,
     transform: [{translateX: -75}],
     display: 'flex',
     flexDirection: 'column',
