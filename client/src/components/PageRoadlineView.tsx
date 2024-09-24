@@ -6,6 +6,7 @@ import Geolocation from 'react-native-geolocation-service';
 import SearchInputLocations from './SearchInputLocations';
 import {
   ChargingStation,
+  GeoCode,
   Marker as MarkerBusinessObject,
   MarkerType,
   Place,
@@ -224,6 +225,7 @@ const DARK_THEME = [
 
 export default function PageRoadlineView() {
   const mapRef = useRef<MapView | null>(null);
+  const [isMarkingType, setIsMarkingType] = useState<MarkerType | null>(null);
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
   const {
     position,
@@ -235,7 +237,6 @@ export default function PageRoadlineView() {
     destinationName,
     setDestinationName,
     securityLevel,
-    setSecurityLevel,
   } = useRideContext();
   const [, storeDataRides] = useStoreDataRides();
   const [markersData, storeDataMarkers] = useStoreDataMarkers();
@@ -293,6 +294,30 @@ export default function PageRoadlineView() {
     return () => Geolocation.clearWatch(watchId);
   }, []);
 
+  useEffect(() => {
+    if (position && destination && areCoordinatesEqual(position, destination)) {
+      resetRide();
+      Toast.show({
+        type: 'info',
+        text1: 'Ride',
+        text2: 'You are arrived !',
+        autoHide: false,
+      });
+    }
+  }, [position]);
+
+  useEffect(() => {
+    if (isMarkingType) {
+      Toast.show({
+        type: 'info',
+        text1: 'Marking',
+        text2: 'Please select a street by a long press',
+        autoHide: false,
+        swipeable: false,
+      });
+    }
+  }, [isMarkingType]);
+
   const handlePlaceSelect = async (place: Place) => {
     const coords = await fetchGeocodeRouting(
       position!,
@@ -332,10 +357,10 @@ export default function PageRoadlineView() {
     ]);
   };
 
-  const handleAddMarker = (type: MarkerType) => {
+  const handleAddMarker = (type: MarkerType, coords: GeoCode) => {
     if (
       markersData?.some(markerData =>
-        areCoordinatesEqual(markerData.geometry, position!),
+        areCoordinatesEqual(markerData.geometry, coords),
       )
     ) {
       displayErrorToast({
@@ -344,12 +369,11 @@ export default function PageRoadlineView() {
       });
       return;
     }
-    const obj = {
-      type: type,
-      geometry: position!,
-    };
     storeDataMarkers
-      .add(obj as any)
+      .add({
+        type: type,
+        geometry: coords,
+      })
       .then(() => {
         Toast.show({
           type: 'success',
@@ -371,18 +395,6 @@ export default function PageRoadlineView() {
     setRideGeometry(null);
   };
 
-  useEffect(() => {
-    if (position && destination && areCoordinatesEqual(position, destination)) {
-      resetRide();
-      Toast.show({
-        type: 'info',
-        text1: 'Ride',
-        text2: 'You are arrived !',
-        autoHide: false,
-      });
-    }
-  }, [position]);
-
   return (
     <>
       <View style={styles.mapContainer}>
@@ -396,6 +408,13 @@ export default function PageRoadlineView() {
           showsIndoorLevelPicker
           showsIndoors
           showsPointsOfInterest
+          moveOnMarkerPress
+          onLongPress={e => {
+            if (isMarkingType) {
+              handleAddMarker(isMarkingType, e.nativeEvent.coordinate);
+              setIsMarkingType(null);
+            }
+          }}
           customMapStyle={isDarkMode ? DARK_THEME : undefined}
           region={
             position
@@ -596,10 +615,10 @@ export default function PageRoadlineView() {
                   ]);
                   break;
                 case 'ride_plothole':
-                  handleAddMarker('plothole');
+                  setIsMarkingType('plothole');
                   break;
                 case 'ride_dense_traffic':
-                  handleAddMarker('dense_traffic');
+                  setIsMarkingType('dense_traffic');
                   break;
               }
             }}
