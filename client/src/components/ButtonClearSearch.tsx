@@ -1,29 +1,24 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
+import {useDarkModeContext} from '../commons/DarkModeContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface IProps {
   onPress?: () => void;
 }
 
-export default function ButtonMyLocation({onPress}: IProps) {
+export default function ButtonClearSearch({onPress}: IProps) {
+  const {isDarkMode} = useDarkModeContext();
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
-      <Icon name="crosshairs" size={25} color={'white'} />
+      <Icon name="close" color={isDarkMode ? 'white' : undefined} size={30} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    position: 'absolute',
-    bottom: 80,
-    left: 20,
-    backgroundColor: '#00695C',
-    padding: 15,
-    borderRadius: 27.5,
-    width: 55,
-    height: 55,
-    alignItems: 'center',
+    position: 'relative',
+    right: 15.5,
   },
 });

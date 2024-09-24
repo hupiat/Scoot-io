@@ -5,7 +5,7 @@ import {
   Modal,
   View,
 } from '@ant-design/react-native';
-import React, {useDeferredValue, useEffect, useMemo, useState} from 'react';
+import React, {useDeferredValue, useMemo, useState} from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -28,6 +28,7 @@ import {
   useDarkModeContext,
 } from '../commons/DarkModeContext';
 import {Ride} from '../commons/types';
+import ButtonClearSearch from './ButtonClearSearch';
 
 export default function PageRidesView() {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -96,15 +97,20 @@ export default function PageRidesView() {
         }}>
         Rides Management
       </Text>
-      <Input
-        placeholder="Search"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        inputStyle={{
-          color: isDarkMode ? 'white' : undefined,
+      <View
+        style={{
           backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',
-        }}
-      />
+        }}>
+        <Input
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          suffix={<ButtonClearSearch onPress={() => setSearchQuery('')} />}
+          inputStyle={{
+            color: isDarkMode ? 'white' : undefined,
+          }}
+        />
+      </View>
       {ridesData.length ? (
         <List>
           {filteredAndSortedRidesData!.map(ride => (

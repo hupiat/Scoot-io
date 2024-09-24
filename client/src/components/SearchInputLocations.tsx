@@ -10,6 +10,8 @@ import {
   COLOR_DARK_MODE_PRIMARY,
   useDarkModeContext,
 } from '../commons/DarkModeContext';
+import ButtonClearSearch from './ButtonClearSearch';
+import {Flex, Input} from '@ant-design/react-native';
 
 interface IProps {
   onSelectPlace: (place: Place) => void;
@@ -67,6 +69,8 @@ export default function SearchInputLocations({
     <SafeAreaView style={styles.autocompleteContainer}>
       <AutocompleteInput
         data={data}
+        placeholder="Search"
+        placeholderTextColor={'grey'}
         value={forceDisplay || query}
         hideResults={hideResults || !query}
         containerStyle={styles.autocompleteContainer}
@@ -76,6 +80,23 @@ export default function SearchInputLocations({
           color: isDarkMode ? 'white' : undefined,
         }}
         onChangeText={setQuery}
+        renderTextInput={() => (
+          <Flex
+            style={{
+              backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',
+              paddingRight: 15.5,
+            }}>
+            <Input
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Search"
+              inputStyle={{
+                color: isDarkMode ? 'white' : undefined,
+              }}
+            />
+            <ButtonClearSearch onPress={() => setQuery('')} />
+          </Flex>
+        )}
         flatListProps={{
           keyExtractor: item => item.id,
           renderItem: ({item}: {item: any}) => (
