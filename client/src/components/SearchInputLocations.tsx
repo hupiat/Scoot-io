@@ -27,7 +27,7 @@ export default function SearchInputLocations({
   const [query, setQuery] = useState<string>('');
   const [data, setData] = useState<[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const {setDestinationName} = useRideContext();
+  const {setDestinationName, destinationName} = useRideContext();
   const {isDarkMode} = useDarkModeContext();
 
   const deferredQuery = useDeferredValue(query);
@@ -64,6 +64,12 @@ export default function SearchInputLocations({
       setDestinationName(null);
     }
   }, [query]);
+
+  useEffect(() => {
+    if (destinationName) {
+      setQuery(destinationName);
+    }
+  }, [destinationName]);
 
   return (
     <SafeAreaView style={styles.autocompleteContainer}>
