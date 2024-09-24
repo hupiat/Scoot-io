@@ -342,7 +342,7 @@ export default function PageRoadlineView() {
 
   const handleDeleteMarker = (marker: MarkerBusinessObject) => {
     Modal.alert('Confirmation', 'Delete this marker ?', [
-      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+      {text: 'Close'},
       {
         text: 'OK',
         onPress: () => {
@@ -482,6 +482,7 @@ export default function PageRoadlineView() {
                 image={require('../assets/marker_charging_station.png')}
                 onSelect={() =>
                   Modal.alert('Informations', chargingStation.name, [
+                    {text: 'Close'},
                     {
                       text: 'Go',
                       onPress: async () => {
@@ -495,7 +496,6 @@ export default function PageRoadlineView() {
                         setDestinationName(chargingStation.name);
                       },
                     },
-                    {text: 'Close'},
                   ])
                 }
               />
@@ -581,7 +581,7 @@ export default function PageRoadlineView() {
               switch (name) {
                 case 'ride_cancel':
                   Modal.alert('Confirmation', 'Cancel the current ride ?', [
-                    {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                    {text: 'Close'},
                     {
                       text: 'OK',
                       onPress: resetRide,
@@ -590,7 +590,7 @@ export default function PageRoadlineView() {
                   break;
                 case 'ride_save':
                   Modal.alert('Confirmation', 'Save the current ride ?', [
-                    {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                    {text: 'Close'},
                     {
                       text: 'OK',
                       onPress: () =>

@@ -118,7 +118,7 @@ export default function PageRidesView() {
               key={ride.id}
               onPress={() => {
                 Modal.alert('Confirmation', 'Start this ride ?', [
-                  {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                  {text: 'Close'},
                   {
                     text: 'OK',
                     onPress: async () => {
@@ -153,7 +153,7 @@ export default function PageRidesView() {
                   style={styles.deleteIcon}
                   onPress={() => {
                     Modal.alert('Confirmation', 'Delete this ride ?', [
-                      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+                      {text: 'Close'},
                       {
                         text: 'OK',
                         onPress: () => {

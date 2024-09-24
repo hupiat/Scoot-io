@@ -105,7 +105,7 @@ export default function PageLogin() {
 
   const handlePressRetrievePassword = (): void => {
     Modal.alert('Confirmation', 'Generate a new password for this mail ?', [
-      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
+      {text: 'Close'},
       {
         text: 'OK',
         onPress: () =>
