@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface IProps {
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 export default function ButtonMyLocation({onPress}: IProps) {

@@ -28,6 +28,7 @@ import {
   useDarkModeContext,
 } from '../commons/DarkModeContext';
 import {Ride} from '../commons/types';
+import ButtonClearSearch from './ButtonClearSearch';
 
 export default function PageRidesView() {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -100,6 +101,7 @@ export default function PageRidesView() {
         placeholder="Search"
         value={searchQuery}
         onChangeText={setSearchQuery}
+        suffix={<ButtonClearSearch onPress={() => setSearchQuery('')} />}
         inputStyle={{
           color: isDarkMode ? 'white' : undefined,
           backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',

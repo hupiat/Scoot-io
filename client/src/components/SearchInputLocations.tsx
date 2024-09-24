@@ -67,6 +67,8 @@ export default function SearchInputLocations({
     <SafeAreaView style={styles.autocompleteContainer}>
       <AutocompleteInput
         data={data}
+        placeholder="Search"
+        placeholderTextColor={'grey'}
         value={forceDisplay || query}
         hideResults={hideResults || !query}
         containerStyle={styles.autocompleteContainer}
