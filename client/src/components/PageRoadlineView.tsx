@@ -288,6 +288,7 @@ export default function PageRoadlineView() {
         enableHighAccuracy: true,
         accuracy: {
           android: 'high',
+          ios: 'best',
         },
       },
     );
