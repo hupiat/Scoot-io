@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RideRepository extends JpaRepository<RideEntity, Long> {
 
-	void deleteAllById(Set<Long> ids);
+	void deleteAllByIdIn(Set<Long> ids);
 }
