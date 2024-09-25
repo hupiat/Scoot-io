@@ -31,8 +31,7 @@ import {
   COLOR_DARK_MODE_PRIMARY,
   useDarkModeContext,
 } from '../commons/DarkModeContext';
-import ButtonMyLocation from './ButtonMyLocation';
-import SecurityLevelIndicator from './SecurityLevelIndicator';
+import SecurityLevelIndicator, {COLOR_SAFE} from './SecurityLevelIndicator';
 
 const DARK_THEME = [
   {
@@ -541,18 +540,30 @@ export default function PageRoadlineView() {
           />
         </View>
       )}
-      <ButtonMyLocation
-        onPress={() => {
-          if (position) {
-            mapRef.current?.animateToRegion({
-              latitude: position.latitude,
-              longitude: position.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
-          }
-        }}
-      />
+      <View>
+        <FloatingAction
+          showBackground={false}
+          overrideWithAction
+          actions={[
+            {
+              name: 'my_location',
+              icon: <Icon name="crosshairs" size={25} color={'white'} />,
+            },
+          ]}
+          position="left"
+          color={COLOR_SAFE}
+          onPressItem={() => {
+            if (position) {
+              mapRef.current?.animateToRegion({
+                latitude: position.latitude,
+                longitude: position.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              });
+            }
+          }}
+        />
+      </View>
       <SecurityLevelIndicator />
       {!!destination && (
         <View>
