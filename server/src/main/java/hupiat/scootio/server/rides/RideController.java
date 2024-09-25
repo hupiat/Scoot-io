@@ -1,7 +1,9 @@
 package hupiat.scootio.server.rides;
 
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +16,7 @@ import hupiat.scootio.server.core.controllers.ICommonController;
 public class RideController implements ICommonController<RideEntity> {
 
 	private final RideRepository repository;
-	
+
 	public RideController(RideRepository repository) {
 		super();
 		this.repository = repository;
@@ -45,4 +47,8 @@ public class RideController implements ICommonController<RideEntity> {
 		repository.deleteById(id);
 	}
 
+	@DeleteMapping("all")
+	public void deleteAll(@RequestBody Set<Long> ids) {
+		repository.deleteAllById(ids);
+	}
 }
