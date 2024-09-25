@@ -224,7 +224,7 @@ const DARK_THEME = [
 
 export default function PageRoadlineView() {
   const mapRef = useRef<MapView | null>(null);
-  const [isMarkingType, setIsMarkingType] = useState<MarkerType | null>(null);
+  const [markingType, setMarkingType] = useState<MarkerType | null>(null);
   const [isVoiceRecognizing, setIsVoiceRecognizing] = useState<boolean>(false);
   const {
     position,
@@ -307,7 +307,7 @@ export default function PageRoadlineView() {
   }, [position]);
 
   useEffect(() => {
-    if (isMarkingType) {
+    if (markingType) {
       Toast.show({
         type: 'info',
         text1: 'Marking',
@@ -318,7 +318,7 @@ export default function PageRoadlineView() {
     } else {
       Toast.hide();
     }
-  }, [isMarkingType]);
+  }, [markingType]);
 
   const handlePlaceSelect = async (place: Place) => {
     const coords = await fetchGeocodeRouting(
@@ -412,9 +412,9 @@ export default function PageRoadlineView() {
           showsPointsOfInterest
           moveOnMarkerPress
           onLongPress={e => {
-            if (isMarkingType) {
-              handleAddMarker(isMarkingType, e.nativeEvent.coordinate);
-              setIsMarkingType(null);
+            if (markingType) {
+              handleAddMarker(markingType, e.nativeEvent.coordinate);
+              setMarkingType(null);
             }
           }}
           customMapStyle={isDarkMode ? DARK_THEME : undefined}
@@ -617,10 +617,10 @@ export default function PageRoadlineView() {
                   ]);
                   break;
                 case 'ride_plothole':
-                  setIsMarkingType(isMarkingType ? null : 'plothole');
+                  setMarkingType(markingType ? null : 'plothole');
                   break;
                 case 'ride_dense_traffic':
-                  setIsMarkingType(isMarkingType ? null : 'dense_traffic');
+                  setMarkingType(markingType ? null : 'dense_traffic');
                   break;
               }
             }}
