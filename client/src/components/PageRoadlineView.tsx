@@ -31,7 +31,7 @@ import {
   COLOR_DARK_MODE_PRIMARY,
   useDarkModeContext,
 } from '../commons/DarkModeContext';
-import SecurityLevelIndicator, {COLOR_SAFE} from './SecurityLevelIndicator';
+import SecurityLevelIndicator, {COLOR_SAFE} from './IndicatorSecurityLevel';
 
 const DARK_THEME = [
   {

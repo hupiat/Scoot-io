@@ -13,7 +13,7 @@ export const COLOR_DANGER = '#D32F2F';
 export const COLOR_WARNING = '#F57C00';
 export const COLOR_SAFE = '#388E3C';
 
-export default function SecurityLevelIndicator() {
+export default function IndicatorSecurityLevel() {
   const {securityLevel, setSecurityLevel} = useRideContext();
   const {destination, position, setRideGeometry} = useRideContext();
   const {isDarkMode} = useDarkModeContext();
