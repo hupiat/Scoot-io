@@ -26,11 +26,13 @@ import {
 } from '../commons/DarkModeContext';
 import {Ride} from '../commons/types';
 import ButtonClearSearch from './ButtonClearSearch';
-import {computePathDistanceKm} from '../commons/tools';
+import {computePathDistanceKm, displayErrorToast} from '../commons/tools';
+import {FloatingAction} from 'react-native-floating-action';
 
 export default function PageRidesView() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [ridesData, storeDataRides] = useStoreDataRides();
+  const [editingRideData, setEditingRideData] = useState<Ride | null>(null);
   const {
     setDestination,
     position,
@@ -42,7 +44,7 @@ export default function PageRidesView() {
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  let filteredAndSortedRidesData = useMemo<Ride[] | undefined>(() => {
+  const filteredAndSortedRidesData = useMemo<Ride[] | undefined>(() => {
     if (ridesData) {
       let res = [...ridesData];
       if (deferredSearchQuery) {
@@ -87,102 +89,173 @@ export default function PageRidesView() {
   };
 
   return (
-    <ScrollView style={styles.scrollView} stickyHeaderIndices={[1]}>
-      <Text
-        style={{
-          ...styles.title,
-          color: isDarkMode ? 'white' : 'black',
-        }}>
-        Rides Management
-      </Text>
-      <View
-        style={{
-          backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',
-        }}>
-        <Input
-          placeholder="Search"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          suffix={<ButtonClearSearch onPress={() => setSearchQuery('')} />}
-          inputStyle={{
-            color: isDarkMode ? 'white' : undefined,
-          }}
-        />
-      </View>
-      {ridesData.length ? (
-        <List>
-          {filteredAndSortedRidesData!.map(ride => (
-            <TouchableOpacity
-              key={ride.id}
-              onPress={() => {
-                Modal.alert('Confirmation', 'Start this ride ?', [
-                  {text: 'Close'},
-                  {
-                    text: 'OK',
-                    onPress: async () => {
-                      const coords = await fetchGeocodeRouting(
-                        position!,
-                        ride.destination,
-                        securityLevel,
-                      );
-                      setRideGeometry(coords);
-                      setDestination(ride.destination);
-                      setDestinationName(ride.name);
-                    },
-                  },
-                ]);
-              }}>
-              <List.Item
-                style={{
-                  backgroundColor: isDarkMode
-                    ? COLOR_DARK_MODE_PRIMARY
-                    : undefined,
-                }}>
-                <View
-                  style={{
-                    color: isDarkMode ? 'white' : undefined,
-                    padding: 10,
-                  }}>
-                  {ride.name} ({dayjs(ride.dateCreation).format('DD/MM/YYYY')})
-                  {'\n\n'}
-                  {computePathDistanceKm(position!, ride.destination)} km
-                </View>
-                <TouchableOpacity
-                  style={styles.deleteIcon}
-                  onPress={() => {
-                    Modal.alert('Confirmation', 'Delete this ride ?', [
-                      {text: 'Close'},
-                      {
-                        text: 'OK',
-                        onPress: () => {
-                          storeDataRides.delete(ride.id).then(() =>
-                            Toast.show({
-                              type: 'success',
-                              text1: 'DELETE',
-                              text2: 'Ride has been deleted !',
-                            }),
-                          );
-                        },
+    <>
+      <ScrollView style={styles.scrollView} stickyHeaderIndices={[2]}>
+        <Text
+          style={{
+            ...styles.title,
+            color: isDarkMode ? 'white' : 'black',
+          }}>
+          Rides Management
+        </Text>
+        <Text
+          style={{
+            ...styles.subtitle,
+            color: isDarkMode ? 'white' : 'black',
+          }}>
+          Press long to update
+        </Text>
+        <View
+          style={{
+            ...styles.searchContainer,
+            backgroundColor: isDarkMode ? COLOR_DARK_MODE_PRIMARY : 'white',
+          }}>
+          <Input
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            suffix={<ButtonClearSearch onPress={() => setSearchQuery('')} />}
+            inputStyle={{
+              color: isDarkMode ? 'white' : undefined,
+            }}
+          />
+        </View>
+        {ridesData.length ? (
+          <List>
+            {filteredAndSortedRidesData!.map(ride => (
+              <TouchableOpacity
+                key={ride.id}
+                onLongPress={() =>
+                  !editingRideData || editingRideData.id !== ride.id
+                    ? setEditingRideData(ride)
+                    : setEditingRideData(null)
+                }
+                onPress={() => {
+                  Modal.alert('Confirmation', 'Start this ride ?', [
+                    {text: 'Close'},
+                    {
+                      text: 'OK',
+                      onPress: async () => {
+                        const coords = await fetchGeocodeRouting(
+                          position!,
+                          ride.destination,
+                          securityLevel,
+                        );
+                        setRideGeometry(coords);
+                        setDestination(ride.destination);
+                        setDestinationName(ride.name);
                       },
-                    ]);
+                    },
+                  ]);
+                }}>
+                <List.Item
+                  style={{
+                    backgroundColor: isDarkMode
+                      ? COLOR_DARK_MODE_PRIMARY
+                      : undefined,
                   }}>
-                  <Icon
-                    name="trash-o"
-                    size={30}
-                    color={isDarkMode ? 'white' : undefined}
-                  />
-                </TouchableOpacity>
-              </List.Item>
-            </TouchableOpacity>
-          ))}
-        </List>
-      ) : (
-        <>
-          <Text style={emptyMessageStyle}>No data have been found :-(</Text>
-          <Text style={emptyMessageStyle}>Start riding !</Text>
-        </>
+                  <View
+                    style={{
+                      display: 'flex',
+                      color: isDarkMode ? 'white' : undefined,
+                      padding: 10,
+                    }}>
+                    {editingRideData && editingRideData.id === ride.id ? (
+                      <Input
+                        value={editingRideData.name}
+                        inputStyle={{
+                          backgroundColor: isDarkMode
+                            ? COLOR_DARK_MODE_PRIMARY
+                            : 'white',
+                          color: isDarkMode ? 'white' : undefined,
+                          position: 'relative',
+                          left: -5,
+                        }}
+                        onChangeText={name =>
+                          setEditingRideData({
+                            ...editingRideData,
+                            name: name,
+                          })
+                        }
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          color: isDarkMode ? 'white' : undefined,
+                        }}>
+                        {ride.name}
+                      </Text>
+                    )}{' '}
+                    <Text
+                      style={{
+                        color: isDarkMode ? 'white' : undefined,
+                      }}>
+                      {dayjs(ride.dateCreation).format('DD/MM/YYYY')}
+                      {'\n\n'}
+                      {computePathDistanceKm(position!, ride.destination)} km
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.deleteIcon}
+                    onPress={() => {
+                      Modal.alert('Confirmation', 'Delete this ride ?', [
+                        {text: 'Close'},
+                        {
+                          text: 'OK',
+                          onPress: () => {
+                            storeDataRides.delete(ride.id).then(() =>
+                              Toast.show({
+                                type: 'success',
+                                text1: 'DELETE',
+                                text2: 'Ride has been deleted !',
+                              }),
+                            );
+                          },
+                        },
+                      ]);
+                    }}>
+                    <Icon
+                      name="trash-o"
+                      size={30}
+                      color={isDarkMode ? 'white' : undefined}
+                    />
+                  </TouchableOpacity>
+                </List.Item>
+              </TouchableOpacity>
+            ))}
+          </List>
+        ) : (
+          <>
+            <Text style={emptyMessageStyle}>No data have been found :-(</Text>
+            <Text style={emptyMessageStyle}>Start riding !</Text>
+          </>
+        )}
+      </ScrollView>
+      {editingRideData && editingRideData.name && (
+        <View>
+          <FloatingAction
+            overrideWithAction
+            showBackground={false}
+            actions={[
+              {
+                name: 'rides_management_save',
+                icon: <Icon name="save" size={25} color={'white'} />,
+              },
+            ]}
+            onPressItem={() =>
+              storeDataRides.update(editingRideData).then(() => {
+                Toast.show({
+                  type: 'success',
+                  text1: 'UPDATE',
+                  text2: 'Ride has been saved !',
+                });
+                setEditingRideData(null);
+              })
+            }
+          />
+        </View>
       )}
-    </ScrollView>
+    </>
   );
 }
 
@@ -191,8 +264,16 @@ const styles = StyleSheet.create({
     fontSize: 50,
     marginTop: 35,
     marginLeft: 10,
-    marginBottom: 25,
+    marginBottom: 15,
     color: 'black',
+  },
+  subtitle: {
+    fontSize: 15,
+    marginLeft: 12.5,
+    marginBottom: 25,
+  },
+  searchContainer: {
+    marginBottom: 20,
   },
   emptyMessage: {
     fontSize: 25,

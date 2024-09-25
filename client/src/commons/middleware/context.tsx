@@ -50,7 +50,7 @@ const MiddlewareContext = ({children}: IProps) => {
           setUserState(user);
           Toast.show({
             type: 'info',
-            text1: 'Logout',
+            text1: 'LOGOUT',
             text2: 'You have been logged out',
           });
         })
@@ -76,7 +76,7 @@ const MiddlewareContext = ({children}: IProps) => {
           } else {
             Toast.show({
               type: 'info',
-              text1: 'Login',
+              text1: 'LOGIN',
               text2: 'You have been logged',
             });
             return await res!.json();

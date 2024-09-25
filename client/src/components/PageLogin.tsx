@@ -81,7 +81,7 @@ export default function PageLogin() {
         .then(() =>
           Toast.show({
             type: 'success',
-            text1: 'Suscribe',
+            text1: 'SUSCRIBE',
             text2: 'You have been suscribed ! An e-mail has been sent :-)',
           }),
         )

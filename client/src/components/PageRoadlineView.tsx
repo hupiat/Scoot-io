@@ -299,7 +299,7 @@ export default function PageRoadlineView() {
       resetRide();
       Toast.show({
         type: 'info',
-        text1: 'Ride',
+        text1: 'RIDE',
         text2: 'You are arrived !',
         autoHide: false,
       });
@@ -310,7 +310,7 @@ export default function PageRoadlineView() {
     if (markingType) {
       Toast.show({
         type: 'info',
-        text1: 'Marking',
+        text1: 'MARKING',
         text2: 'Please select a street by a long press',
         autoHide: false,
         swipeable: false,
@@ -514,6 +514,7 @@ export default function PageRoadlineView() {
         <View>
           <FloatingAction
             overrideWithAction
+            showBackground={false}
             actions={[
               {
                 name: 'speech_recognize',
@@ -521,7 +522,7 @@ export default function PageRoadlineView() {
                   <Icon
                     name={!isVoiceRecognizing ? 'microphone' : 'close'}
                     color={'white'}
-                    size={30}
+                    size={25}
                   />
                 ),
               },
@@ -556,6 +557,7 @@ export default function PageRoadlineView() {
       {!!destination && (
         <View>
           <FloatingAction
+            showBackground={false}
             actions={[
               {
                 name: 'ride_cancel',

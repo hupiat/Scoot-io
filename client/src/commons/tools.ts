@@ -35,7 +35,7 @@ export const removeToken = async () => {
 export const displayErrorToast = (e: Error): void => {
   Toast.show({
     type: 'error',
-    text1: e.name,
+    text1: e.name.toLocaleUpperCase(),
     text2: e.message,
   });
 };

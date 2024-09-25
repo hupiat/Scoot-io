@@ -80,7 +80,7 @@ export default function PageProfileView() {
     setUser(null).then(() =>
       Toast.show({
         type: 'info',
-        text1: 'Logout',
+        text1: 'LOGOUT',
         text2: 'You have been logged out',
       }),
     );
