@@ -61,7 +61,7 @@ export default function SearchInputLocations({
 
   useEffect(() => {
     if (query) {
-      setDestinationName(null);
+      setDestinationName(query);
     }
   }, [query]);
 

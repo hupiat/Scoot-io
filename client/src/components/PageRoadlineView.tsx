@@ -484,7 +484,7 @@ export default function PageRoadlineView() {
                   Modal.alert('Informations', chargingStation.name, [
                     {text: 'Close'},
                     {
-                      text: 'Go',
+                      text: 'GO',
                       onPress: async () => {
                         const coords = await fetchGeocodeRouting(
                           position!,

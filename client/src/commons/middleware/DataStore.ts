@@ -91,7 +91,7 @@ export default class DataStore<T extends BusinessObject> {
   // Suscribers
   // Listeners should update React states and manage data flow from this class
 
-  private notify(): void {
+  notify(): void {
     if (this.isSync()) {
       this.subscribers.forEach(notify => notify(this.data!));
     }

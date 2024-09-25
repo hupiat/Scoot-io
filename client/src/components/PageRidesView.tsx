@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Checkbox,
   Input,
   List,
   Modal,
@@ -26,13 +27,16 @@ import {
 } from '../commons/DarkModeContext';
 import {Ride} from '../commons/types';
 import ButtonClearSearch from './ButtonClearSearch';
-import {computePathDistanceKm, displayErrorToast} from '../commons/tools';
+import {computePathDistanceKm} from '../commons/tools';
 import {FloatingAction} from 'react-native-floating-action';
+import DataStore from '../commons/middleware/DataStore';
+import {API_PREFIX, API_RIDES, URL_BACKEND} from '../commons/middleware/paths';
 
 export default function PageRidesView() {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [ridesData, storeDataRides] = useStoreDataRides();
   const [editingRideData, setEditingRideData] = useState<Ride | null>(null);
+  const [selectedRideData, setSelectedRideData] = useState<Ride[]>([]);
+  const [ridesData, storeDataRides] = useStoreDataRides();
   const {
     setDestination,
     position,
@@ -149,6 +153,24 @@ export default function PageRidesView() {
                   ]);
                 }}>
                 <List.Item
+                  thumb={
+                    editingRideData && (
+                      <Checkbox
+                        checked={selectedRideData.includes(ride)}
+                        onChange={() => {
+                          if (selectedRideData.includes(ride)) {
+                            setSelectedRideData(
+                              selectedRideData.filter(
+                                selected => selected.id !== ride.id,
+                              ),
+                            );
+                          } else {
+                            setSelectedRideData([...selectedRideData, ride]);
+                          }
+                        }}
+                      />
+                    )
+                  }
                   style={{
                     backgroundColor: isDarkMode
                       ? COLOR_DARK_MODE_PRIMARY
@@ -203,13 +225,18 @@ export default function PageRidesView() {
                         {
                           text: 'OK',
                           onPress: () => {
-                            storeDataRides.delete(ride.id).then(() =>
+                            storeDataRides.delete(ride.id).then(() => {
                               Toast.show({
                                 type: 'success',
                                 text1: 'DELETE',
                                 text2: 'Ride has been deleted !',
-                              }),
-                            );
+                              });
+                              setSelectedRideData(
+                                selectedRideData.filter(
+                                  selected => selected.id !== ride.id,
+                                ),
+                              );
+                            });
                           },
                         },
                       ]);
@@ -250,8 +277,67 @@ export default function PageRidesView() {
                   text2: 'Ride has been saved !',
                 });
                 setEditingRideData(null);
+                setSelectedRideData([]);
               })
             }
+          />
+        </View>
+      )}
+      {editingRideData && !!selectedRideData.length && (
+        <View>
+          <FloatingAction
+            overrideWithAction
+            showBackground={false}
+            position="left"
+            actions={[
+              {
+                name: 'rides_management_delete_all',
+                icon: <Icon name="trash-o" size={25} color={'white'} />,
+              },
+            ]}
+            onPressItem={async () => {
+              Modal.alert(
+                'Confirmation',
+                'Are you sure you want to delete all those rides ?',
+                [
+                  {text: 'Close'},
+                  {
+                    text: 'OK',
+                    onPress: async () => {
+                      await DataStore.doFetch(
+                        `${URL_BACKEND}/${API_PREFIX}/${API_RIDES}/all`,
+                        url =>
+                          fetch(url, {
+                            method: 'DELETE',
+                            body: JSON.stringify(
+                              selectedRideData.map(selected => selected.id),
+                            ),
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                          }),
+                      );
+                      Toast.show({
+                        type: 'success',
+                        text1: 'UPDATE',
+                        text2: 'Rides have been deleted !',
+                      });
+                      storeDataRides.data = new Set(
+                        [...storeDataRides.data!].filter(
+                          snapshotRide =>
+                            !selectedRideData.some(
+                              selected => snapshotRide.id === selected.id,
+                            ),
+                        ),
+                      );
+                      storeDataRides.notify();
+                      setEditingRideData(null);
+                      setSelectedRideData([]);
+                    },
+                  },
+                ],
+              );
+            }}
           />
         </View>
       )}
@@ -273,7 +359,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   searchContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   emptyMessage: {
     fontSize: 25,
