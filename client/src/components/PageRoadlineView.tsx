@@ -17,10 +17,9 @@ import {
   useStoreDataMarkers,
   useStoreDataRides,
 } from '../commons/middleware/hooks';
-import {displayErrorToast} from '../commons/tools';
+import {areCoordinatesEqual, displayErrorToast} from '../commons/tools';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
-  areCoordinatesEqual,
   fetchChargingStations,
   fetchGeocodeRouting,
   LOCAL_SEARCH_CHARGING_STATIONS_RADIUS_KM,

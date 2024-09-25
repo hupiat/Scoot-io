@@ -17,10 +17,7 @@ import {useStoreDataRides} from '../commons/middleware/hooks';
 import dayjs from 'dayjs';
 import {useRideContext} from '../commons/rides/context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  computePathDistanceKm,
-  fetchGeocodeRouting,
-} from '../commons/middleware/tools';
+import {fetchGeocodeRouting} from '../commons/middleware/tools';
 import Toast from 'react-native-toast-message';
 import {
   COLOR_DARK_MODE_PRIMARY,
@@ -29,6 +26,7 @@ import {
 } from '../commons/DarkModeContext';
 import {Ride} from '../commons/types';
 import ButtonClearSearch from './ButtonClearSearch';
+import {computePathDistanceKm} from '../commons/tools';
 
 export default function PageRidesView() {
   const [searchQuery, setSearchQuery] = useState<string>('');
