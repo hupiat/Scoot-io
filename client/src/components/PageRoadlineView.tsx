@@ -315,6 +315,8 @@ export default function PageRoadlineView() {
         autoHide: false,
         swipeable: false,
       });
+    } else {
+      Toast.hide();
     }
   }, [isMarkingType]);
 
@@ -615,10 +617,10 @@ export default function PageRoadlineView() {
                   ]);
                   break;
                 case 'ride_plothole':
-                  setIsMarkingType('plothole');
+                  setIsMarkingType(isMarkingType ? null : 'plothole');
                   break;
                 case 'ride_dense_traffic':
-                  setIsMarkingType('dense_traffic');
+                  setIsMarkingType(isMarkingType ? null : 'dense_traffic');
                   break;
               }
             }}
