@@ -87,6 +87,16 @@ export default function PageRidesView() {
     );
   }
 
+  const handleSelectRide = (ride: Ride) => {
+    if (selectedRideData.includes(ride)) {
+      setSelectedRideData(
+        selectedRideData.filter(selected => selected.id !== ride.id),
+      );
+    } else {
+      setSelectedRideData([...selectedRideData, ride]);
+    }
+  };
+
   const emptyMessageStyle = {
     ...styles.emptyMessage,
     color: isDarkMode ? 'white' : undefined,
@@ -135,39 +145,33 @@ export default function PageRidesView() {
                     : setEditingRideData(null)
                 }
                 onPress={() => {
-                  Modal.alert('Confirmation', 'Start this ride ?', [
-                    {text: 'Close'},
-                    {
-                      text: 'OK',
-                      onPress: async () => {
-                        const coords = await fetchGeocodeRouting(
-                          position!,
-                          ride.destination,
-                          securityLevel,
-                        );
-                        setRideGeometry(coords);
-                        setDestination(ride.destination);
-                        setDestinationName(ride.name);
+                  if (!editingRideData) {
+                    Modal.alert('Confirmation', 'Start this ride ?', [
+                      {text: 'Close'},
+                      {
+                        text: 'OK',
+                        onPress: async () => {
+                          const coords = await fetchGeocodeRouting(
+                            position!,
+                            ride.destination,
+                            securityLevel,
+                          );
+                          setRideGeometry(coords);
+                          setDestination(ride.destination);
+                          setDestinationName(ride.name);
+                        },
                       },
-                    },
-                  ]);
+                    ]);
+                  } else {
+                    handleSelectRide(ride);
+                  }
                 }}>
                 <List.Item
                   thumb={
                     editingRideData && (
                       <Checkbox
                         checked={selectedRideData.includes(ride)}
-                        onChange={() => {
-                          if (selectedRideData.includes(ride)) {
-                            setSelectedRideData(
-                              selectedRideData.filter(
-                                selected => selected.id !== ride.id,
-                              ),
-                            );
-                          } else {
-                            setSelectedRideData([...selectedRideData, ride]);
-                          }
-                        }}
+                        onChange={() => handleSelectRide(ride)}
                       />
                     )
                   }
